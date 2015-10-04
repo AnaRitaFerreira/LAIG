@@ -1,0 +1,203 @@
+
+<lsx>
+
+<globals>
+    <frustum near="ff" far="ff"/>                      <!-- frustum planes-->
+    <translate x="ff" y="ff" z="ff" />                 <!-- initial translate -->
+    <rotation axis="cc" angle="ff" />                  <!-- initial rotation 3 -->
+    <rotation axis="cc" angle="ff" />                  <!-- initial rotation 2 -->
+    <rotation axis="cc" angle="ff" />                  <!-- initial rotation 1 -->
+    <scale sx="ff" sy="ff" sz="ff" />                  <!-- initial scaling -->
+    <reference length="ff" />                          <!-- axis length; "0" means no axis-->
+</globals>
+
+
+<ILLUMINATION>
+    <ambient r="ff" g="ff" b="ff" a="ff" />            <!-- global ambient -->
+    <doubleside value="tt" />                          <!-- double or single side illum. -->
+    <background r="ff" g="ff" b="ff" a="ff" />         <!-- background color -->
+</ILLUMINATION>
+
+
+<LIGHTS>
+     <light id="1" type= enabled="true" marker="false" pos="3 7 0" angle="90" exponent="">
+          <ambient  r="0.5" g="0.5" b="0.7" a="0.5" />
+          <!-- etc... -->
+      </light>
+      <light id="2" type= enabled="true" marker="true" pos="15 7 5" angle="90" exponent="">
+          <ambient  r="0.5" g="0.5" b="0.7" a="0.5" />
+          <!-- etc... -->
+      </light>
+      <light id="3" type= enabled="false" marker="true" pos="3 7 5" angle="90" exponent="">
+          <ambient  r="0.5" g="0.5" b="0.7" a="0.5" />
+          <!-- etc... -->
+      </light>
+
+    <!-- NOTE: this block "LIGHT" must be repeated as necessary with different "id" -->
+    
+</LIGHTS>
+
+
+<TEXTURES>
+    <TEXTURE id="madeira">
+        <file path="ss" />                             <!-- path to file -->
+        <amplif_factor s="ff" t="ff" />                <!-- x/s, y/t -->
+    </TEXTURE>
+
+    <TEXTURE id="metal">
+        <file path="ss" />                             <!-- path to file -->
+        <amplif_factor s="ff" t="ff" />                <!-- x/s, y/t -->
+    </TEXTURE>
+
+    <!-- NOTE: this block "TEXTURE" must be repeated as necessary with different "id" -->
+    
+</TEXTURES>
+
+
+<MATERIALS>
+
+    <MATERIAL id="shiny">                                  
+        <shininess value="ff" />
+        <specular r="ff" g="ff" b="ff" a="ff" />        <!-- specular reflection -->
+        <diffuse r="ff" g="ff" b="ff" a="ff" />         <!-- diffuse reflection -->
+        <ambient r="ff" g="ff" b="ff" a="ff" />         <!-- ambient reflection -->
+        <emission r="ff" g="ff" b="ff" a="ff" />        <!-- emission component -->
+     </MATERIAL>
+
+     <MATERIAL id="nonRefle">                                  
+        <shininess value="ff" />
+        <specular r="ff" g="ff" b="ff" a="ff" />        <!-- specular reflection -->
+        <diffuse r="ff" g="ff" b="ff" a="ff" />         <!-- diffuse reflection -->
+        <ambient r="ff" g="ff" b="ff" a="ff" />         <!-- ambient reflection -->
+        <emission r="ff" g="ff" b="ff" a="ff" />        <!-- emission component -->
+     </MATERIAL>
+
+    <!-- NOTE: the "MATERIAL" block may be repeated as required. Each defined material requires a distinct "id" -->
+
+</MATERIALS>
+
+
+<LEAVES>
+    <!-- next lines define nodes of type leaf; they may be repeated, in any order, as necessary -->
+    <LEAF id="tampo" type="rectangle" args="ff ff ff ff" />
+    <LEAF id="perna" type="cylinder" args="ff ff ff ff" />
+</LEAVES>
+
+
+<NODES>
+
+    <ROOT id="mesa" />     <!-- identifier of root node of the scene graph; this node     -->
+                         <!--   must be defined in one of the following NODE declarations -->
+
+    <NODE id="mesa">       <!--   defines one intermediate node; may be repeated as necessary -->
+
+        <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
+        <TRANSLATION x="ff" y="ff" z="ff" />
+        <ROTATION axis="cc" angle="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />
+
+        < !-- declaring descendents, at least one node or one leaf must be present -->
+        <DESCENDANTS>
+            <DESCENDANT id="pernas" />
+            <DESCENDANT id="tampo" />     <!-- "ss" is the identifier of a node or of leaf; -->
+                                          <!--     may be repeatad as necessary. It can refer an -->
+                                          <!--      identifier of another node, later defined in the lsx file. -->
+            </DESCENDANTS>
+
+    </NODE>
+
+    <NODE id="tampo1">       <!--   defines one intermediate node; may be repeated as necessary -->
+
+        <!-- next two lines are mandatory -->
+        <MATERIAL id="nonRefle" />      <!-- declared material superimposes the material received from parent node -->
+                                  <!-- id="null" maintains material from parent node        -->
+        <TEXTURE id="madeira" />       <!-- declared texture superimposes the texture received from parent node -->
+                                  <!-- id="null" maintains texture from parent node       -->
+                                  <!-- id="clear" clears texture declaration received from parent node      -->
+
+        <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
+        <TRANSLATION x="ff" y="ff" z="ff" />
+        <ROTATION axis="cc" angle="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />
+
+        < !-- declaring descendents, at least one node or one leaf must be present -->
+        <DESCENDANTS>
+            <DESCENDANT id="tampo" />
+                <!-- "ss" is the identifier of a node or of leaf; -->
+                                          <!--     may be repeatad as necessary. It can refer an -->
+                                          <!--      identifier of another node, later defined in the lsx file. -->
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="pernas">       <!--   defines one intermediate node; may be repeated as necessary -->
+
+        <!-- next two lines are mandatory -->
+        <MATERIAL id="shiny" />      <!-- declared material superimposes the material received from parent node -->
+                                  <!-- id="null" maintains material from parent node        -->
+        <TEXTURE id="metal" />       <!-- declared texture superimposes the texture received from parent node -->
+                                  <!-- id="null" maintains texture from parent node       -->
+                                  <!-- id="clear" clears texture declaration received from parent node      -->
+
+        <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
+        <TRANSLATION x="ff" y="ff" z="ff" />
+        <ROTATION axis="cc" angle="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />
+
+        < !-- declaring descendents, at least one node or one leaf must be present -->
+        <DESCENDANTS>
+            <DESCENDANT id="perna1" />
+            <DESCENDANT id="perna2" />
+            <DESCENDANT id="perna3" />
+            <DESCENDANT id="perna4" />      <!-- "ss" is the identifier of a node or of leaf; -->
+                                          <!--     may be repeatad as necessary. It can refer an -->
+                                          <!--      identifier of another node, later defined in the lsx file. -->
+        </DESCENDANTS>
+
+    </NODE>
+
+    <NODE id="perna1">
+        
+        <TRANSLATION x="ff" y="ff" z="ff" />
+        <ROTATION axis="cc" angle="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />
+
+         <DESCENDANTS>
+            <DESCENDANT id="perna" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="perna2">
+        
+        <TRANSLATION x="ff" y="ff" z="ff" />
+        <ROTATION axis="cc" angle="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />
+
+         <DESCENDANTS>
+            <DESCENDANT id="perna" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="perna3">
+        
+        <TRANSLATION x="ff" y="ff" z="ff" />
+        <ROTATION axis="cc" angle="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />
+
+         <DESCENDANTS>
+            <DESCENDANT id="perna" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="perna4">
+        
+        <TRANSLATION x="ff" y="ff" z="ff" />
+        <ROTATION axis="cc" angle="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />
+
+         <DESCENDANTS>
+            <DESCENDANT id="perna" />
+        </DESCENDANTS>
+    </NODE>
+</NODES>
+
+</lsx>
