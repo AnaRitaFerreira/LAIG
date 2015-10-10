@@ -45,19 +45,40 @@ MySceneGraph.prototype.onXMLReady=function()
 /*
  * Example of method that parses elements of one block and stores information in a specific data structure
  */
-MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
-	
-	var elems =  rootElement.getElementsByTagName('globals');
+function getUniqueElement(rootElement,tag) {
+ 	var elems =  rootElement.getElementsByTagName(tag);
 	if (elems == null) {
-		return "globals element is missing.";
+		return (tag + " element is missing.");
 	}
 
 	if (elems.length != 1) {
-		return "either zero or more than one 'globals' element found.";
-	}
+		console.log(elems.length);
+		return ("either zero or more than one" + tag + " element found.");
 
+	}
+	return elems[0];
+}
+
+MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
+
+
+	var initials = getUniqueElement(rootElement,'INITIALS');
+	var globals =  getUniqueElement(initials,'globals');
+	var frustum =  getUniqueElement(initials,'frustum');
+	var translate =  getUniqueElement(initials,'translate');
+	var scale =  getUniqueElement(initials,'scale');
+	var reference =  getUniqueElement(initials,'reference');
+	
 	// various examples of different types of access
-	var globals = elems[0];
+	var near = this.reader.getFloat(frustum, "near");
+	var far = this.reader.getFloat(frustum, "far");
+	var x = this.reader.getFloat(translate, "x");
+	var y = this.reader.getFloat(translate, "y");
+	var z = this.reader.getFloat(translate, "z");
+	var sx = this.reader.getFloat(scale, "sx");
+	var sy = this.reader.getFloat(scale, "sy");
+	var sz = this.reader.getFloat(scale, "sz");
+	var length = this.reader.getFloat(reference, "length");
 	this.background = this.reader.getRGBA(globals, 'background');
 	this.drawmode = this.reader.getItem(globals, 'drawmode', ["fill","line","point"]);
 	this.cullface = this.reader.getItem(globals, 'cullface', ["back","front","none", "frontandback"]);
@@ -65,10 +86,10 @@ MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
 
 	console.log("Globals read from file: {background=" + this.background + ", drawmode=" + this.drawmode + ", cullface=" + this.cullface + ", cullorder=" + this.cullorder + "}");
 
-	var tempList=rootElement.getElementsByTagName('list');
+	var tempList=rootElement.getElementsByTagName('INITIALS');
 
 	if (tempList == null  || tempList.length==0) {
-		return "list element is missing.";
+		return "initials element is missing.";
 	}
 	
 	this.list=[];
@@ -79,7 +100,7 @@ MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
 		var e=tempList[0].children[i];
 
 		// process each element and store its information
-		this.list[e.id]=e.attributes.getNamedItem("coords").value;
+		//this.list[e.id]=e.attributes.getNamedItem("coords").value;
 		console.log("Read list item id "+ e.id+" with value "+this.list[e.id]);
 	};
 

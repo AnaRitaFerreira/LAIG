@@ -1,41 +1,51 @@
 
-<lsx>
+<SCENE>
 
-<globals>
-    <frustum near="ff" far="ff"/>                      <!-- frustum planes-->
-    <translate x="ff" y="ff" z="ff" />                 <!-- initial translate -->
-    <rotation axis="cc" angle="ff" />                  <!-- initial rotation 3 -->
-    <rotation axis="cc" angle="ff" />                  <!-- initial rotation 2 -->
-    <rotation axis="cc" angle="ff" />                  <!-- initial rotation 1 -->
-    <scale sx="ff" sy="ff" sz="ff" />                  <!-- initial scaling -->
-    <reference length="ff" />                          <!-- axis length; "0" means no axis-->
-</globals>
+<INITIALS>
+    <globals background="0 0.5 0 1" drawmode="fill" shading="gouraud" cullface="none" cullorder="CCW" /> <!--é pra ficar?-->
+    <frustum near="0.1" far="0.2"/>                      <!-- frustum planes-->
+    <translate x="1" y="-1" z="2" />                 <!-- initial translate -->
+    <rotation axis="z" angle="0" />                  <!-- initial rotation 3 -->
+    <rotation axis="y" angle="-1" />                  <!-- initial rotation 2 -->
+    <rotation axis="x" angle="0" />                  <!-- initial rotation 1 -->
+    <scale sx="1" sy="1" sz="1" />                  <!-- initial scaling -->
+    <reference length="1" />                          <!-- axis length; "0" means no axis-->
+</INITIALS>
 
 
 <ILLUMINATION>
-    <ambient r="ff" g="ff" b="ff" a="ff" />            <!-- global ambient -->
-    <doubleside value="tt" />                          <!-- double or single side illum. -->
-    <background r="ff" g="ff" b="ff" a="ff" />         <!-- background color -->
+    <ambient r="0.5" g="0.5" b="0.7" a="0.5" />            <!-- global ambient -->
+    <doubleside value="true" />                          <!-- double or single side illum. -->
+    <background r="0" g="0.5" b="0" a="1" />         <!-- background color -->
 </ILLUMINATION>
 
-
 <LIGHTS>
-     <light id="1" type= enabled="true" marker="false" pos="3 7 0" angle="90" exponent="">
-          <ambient  r="0.5" g="0.5" b="0.7" a="0.5" />
-          <!-- etc... -->
-      </light>
-      <light id="2" type= enabled="true" marker="true" pos="15 7 5" angle="90" exponent="">
-          <ambient  r="0.5" g="0.5" b="0.7" a="0.5" />
-          <!-- etc... -->
-      </light>
-      <light id="3" type= enabled="false" marker="true" pos="3 7 5" angle="90" exponent="">
-          <ambient  r="0.5" g="0.5" b="0.7" a="0.5" />
-          <!-- etc... -->
-      </light>
+    <LIGHT id="1">                                    <!-- light identifier -->
+        <enable value ="true" />                         <!-- enable/disable -->
+        <position x="3" y="7" z="0" w="ff" />       <!-- light position -->
+        <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
+       <!-- <diffuse r="ff" g="ff" b="ff" a="ff" />        <!-- diffuse component -->
+       <!-- <specular r="ff" g="ff" b="ff" a="ff" />       <!-- specular component -->
+    </LIGHT>
+    <LIGHT id="2">                                    <!-- light identifier -->
+        <enable value ="true" />                         <!-- enable/disable -->
+        <position x="15" y="7" z="5" w="ff" />       <!-- light position -->
+        <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
+       <!-- <diffuse r="ff" g="ff" b="ff" a="ff" />        <!-- diffuse component -->
+       <!-- <specular r="ff" g="ff" b="ff" a="ff" />       <!-- specular component -->
+    </LIGHT>
+    <LIGHT id="3">                                    <!-- light identifier -->
+        <enable value ="false" />                         <!-- enable/disable -->
+        <position x="3" y="7" z="0" w="ff" />       <!-- light position -->
+        <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
+       <!-- <diffuse r="ff" g="ff" b="ff" a="ff" />        <!-- diffuse component -->
+       <!-- <specular r="ff" g="ff" b="ff" a="ff" />       <!-- specular component -->
+    </LIGHT>
 
     <!-- NOTE: this block "LIGHT" must be repeated as necessary with different "id" -->
     
 </LIGHTS>
+
 
 
 <TEXTURES>
@@ -57,19 +67,19 @@
 <MATERIALS>
 
     <MATERIAL id="shiny">                                  
-        <shininess value="ff" />
-        <specular r="ff" g="ff" b="ff" a="ff" />        <!-- specular reflection -->
-        <diffuse r="ff" g="ff" b="ff" a="ff" />         <!-- diffuse reflection -->
-        <ambient r="ff" g="ff" b="ff" a="ff" />         <!-- ambient reflection -->
+        <shininess value="1" />
+        <specular r="0.8" g="0.8" b="0.8" a="0.8" />        <!-- specular reflection -->
+        <diffuse r="0.6" g="0.6" b="0.6" a="0.6" />         <!-- diffuse reflection -->
+        <ambient r="0.2" g="0.2" b="0.2" a="0.2" />         <!-- ambient reflection -->
         <emission r="ff" g="ff" b="ff" a="ff" />        <!-- emission component -->
      </MATERIAL>
 
      <MATERIAL id="nonRefle">                                  
-        <shininess value="ff" />
-        <specular r="ff" g="ff" b="ff" a="ff" />        <!-- specular reflection -->
-        <diffuse r="ff" g="ff" b="ff" a="ff" />         <!-- diffuse reflection -->
-        <ambient r="ff" g="ff" b="ff" a="ff" />         <!-- ambient reflection -->
-        <emission r="ff" g="ff" b="ff" a="ff" />        <!-- emission component -->
+        <shininess value="1" />
+        <specular r="0.8" g="0.8" b="0.8" a="0.8" />        <!-- specular reflection -->
+        <diffuse r="0.6" g="0.6" b="0.6" a="0.6" />         <!-- diffuse reflection -->
+        <ambient r="0.2" g="0.2" b="0.2" a="0.2" />         <!-- ambient reflection -->
+        <emission r="0.1" g="0.1" b="0.1" a="0.1" />        <!-- emission component -->
      </MATERIAL>
 
     <!-- NOTE: the "MATERIAL" block may be repeated as required. Each defined material requires a distinct "id" -->
@@ -79,8 +89,16 @@
 
 <LEAVES>
     <!-- next lines define nodes of type leaf; they may be repeated, in any order, as necessary -->
-    <LEAF id="tampo" type="rectangle" args="ff ff ff ff" />
-    <LEAF id="perna" type="cylinder" args="ff ff ff ff" />
+    <LEAF id="tampo" type="rectangle" args="1 1 2 2" />
+    <LEAF id="perna" type="cylinder" args="3 3 3 0 1" />
+    <LEAF id="ss" type="sphere" args="2 6 3" />
+    <LEAF id="ss" type="triangle" args="0 0 0 2 0 0 1 1 0" />
+
+    <!-- Parameters of the above primitives:                                                         -->
+        <!--rectangle: 2D coordinates for left-top and right-bottom vertices.                        -->
+        <!-- cylinder:  height, bottom radius, top radius, sections along height, parts per section  -->
+        <!-- sphere:    radius, parts along radius, parts per section                                -->
+        <!-- triangle:   coordinates of each vertex                                                  -->
 </LEAVES>
 
 
@@ -96,7 +114,7 @@
         <ROTATION axis="cc" angle="ff" />
         <SCALE sx="ff" sy="ff" sz="ff" />
 
-        < !-- declaring descendents, at least one node or one leaf must be present -->
+        <!-- declaring descendents, at least one node or one leaf must be present -->
         <DESCENDANTS>
             <DESCENDANT id="pernas" />
             <DESCENDANT id="tampo" />     <!-- "ss" is the identifier of a node or of leaf; -->
@@ -120,7 +138,7 @@
         <ROTATION axis="cc" angle="ff" />
         <SCALE sx="ff" sy="ff" sz="ff" />
 
-        < !-- declaring descendents, at least one node or one leaf must be present -->
+        <!-- declaring descendents, at least one node or one leaf must be present -->
         <DESCENDANTS>
             <DESCENDANT id="tampo" />
                 <!-- "ss" is the identifier of a node or of leaf; -->
@@ -143,7 +161,7 @@
         <ROTATION axis="cc" angle="ff" />
         <SCALE sx="ff" sy="ff" sz="ff" />
 
-        < !-- declaring descendents, at least one node or one leaf must be present -->
+        <!-- declaring descendents, at least one node or one leaf must be present -->
         <DESCENDANTS>
             <DESCENDANT id="perna1" />
             <DESCENDANT id="perna2" />
@@ -200,4 +218,4 @@
     </NODE>
 </NODES>
 
-</lsx>
+</SCENE>
