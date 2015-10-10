@@ -22,24 +22,24 @@
 <LIGHTS>
     <LIGHT id="1">                                    <!-- light identifier -->
         <enable value ="true" />                         <!-- enable/disable -->
-        <position x="3" y="7" z="0" w="ff" />       <!-- light position -->
+        <position x="3" y="7" z="0" w="1" />       <!-- light position -->
         <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
-       <!-- <diffuse r="ff" g="ff" b="ff" a="ff" />        <!-- diffuse component -->
-       <!-- <specular r="ff" g="ff" b="ff" a="ff" />       <!-- specular component -->
+        <diffuse r="0.2" g="0.2" b="0.2" a="0.2" />        <!-- diffuse component -->
+        <specular r="0.2" g="0.2" b="0.2" a="0.2" />       <!-- specular component -->
     </LIGHT>
     <LIGHT id="2">                                    <!-- light identifier -->
         <enable value ="true" />                         <!-- enable/disable -->
-        <position x="15" y="7" z="5" w="ff" />       <!-- light position -->
+        <position x="15" y="7" z="5" w="1" />       <!-- light position -->
         <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
-       <!-- <diffuse r="ff" g="ff" b="ff" a="ff" />        <!-- diffuse component -->
-       <!-- <specular r="ff" g="ff" b="ff" a="ff" />       <!-- specular component -->
+        <diffuse r="0.2" g="f0.2f" b="0.2" a="0.2" />        <!-- diffuse component -->
+        <specular r="0.2" g="0.2" b="0.2" a="0.2" />       <!-- specular component -->
     </LIGHT>
     <LIGHT id="3">                                    <!-- light identifier -->
         <enable value ="false" />                         <!-- enable/disable -->
-        <position x="3" y="7" z="0" w="ff" />       <!-- light position -->
+        <position x="3" y="7" z="0" w="1" />       <!-- light position -->
         <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
-       <!-- <diffuse r="ff" g="ff" b="ff" a="ff" />        <!-- diffuse component -->
-       <!-- <specular r="ff" g="ff" b="ff" a="ff" />       <!-- specular component -->
+        <diffuse r="0.2" g="0.2" b="0.2" a="0.2" />        <!-- diffuse component -->
+        <specular r="0.2" g="0.2" b="0.2" a="0.2" />       <!-- specular component -->
     </LIGHT>
 
     <!-- NOTE: this block "LIGHT" must be repeated as necessary with different "id" -->
@@ -50,13 +50,13 @@
 
 <TEXTURES>
     <TEXTURE id="madeira">
-        <file path="ss" />                             <!-- path to file -->
-        <amplif_factor s="ff" t="ff" />                <!-- x/s, y/t -->
+        <file path="textures/wood.png" />                             <!-- path to file -->
+        <amplif_factor s="0.5" t="0.5" />                <!-- x/s, y/t -->
     </TEXTURE>
 
     <TEXTURE id="metal">
-        <file path="ss" />                             <!-- path to file -->
-        <amplif_factor s="ff" t="ff" />                <!-- x/s, y/t -->
+        <file path="textures/metal.png" />                             <!-- path to file -->
+        <amplif_factor s="0.5" t="0.5" />                <!-- x/s, y/t -->
     </TEXTURE>
 
     <!-- NOTE: this block "TEXTURE" must be repeated as necessary with different "id" -->
@@ -71,7 +71,7 @@
         <specular r="0.8" g="0.8" b="0.8" a="0.8" />        <!-- specular reflection -->
         <diffuse r="0.6" g="0.6" b="0.6" a="0.6" />         <!-- diffuse reflection -->
         <ambient r="0.2" g="0.2" b="0.2" a="0.2" />         <!-- ambient reflection -->
-        <emission r="ff" g="ff" b="ff" a="ff" />        <!-- emission component -->
+        <emission r="0.1" g="0.1" b="0.1" a="0.1" />        <!-- emission component -->
      </MATERIAL>
 
      <MATERIAL id="nonRefle">                                  
@@ -110,7 +110,7 @@
     <NODE id="mesa">       <!--   defines one intermediate node; may be repeated as necessary -->
 
         <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
-        <TRANSLATION x="ff" y="ff" z="ff" />
+      <!--  <TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
         <SCALE sx="ff" sy="ff" sz="ff" />
 
@@ -134,7 +134,7 @@
                                   <!-- id="clear" clears texture declaration received from parent node      -->
 
         <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
-        <TRANSLATION x="ff" y="ff" z="ff" />
+       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
         <SCALE sx="ff" sy="ff" sz="ff" />
 
@@ -157,7 +157,7 @@
                                   <!-- id="clear" clears texture declaration received from parent node      -->
 
         <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
-        <TRANSLATION x="ff" y="ff" z="ff" />
+        <!--<TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
         <SCALE sx="ff" sy="ff" sz="ff" />
 
@@ -175,9 +175,9 @@
 
     <NODE id="perna1">
         
-        <TRANSLATION x="ff" y="ff" z="ff" />
+       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />-->
 
          <DESCENDANTS>
             <DESCENDANT id="perna" />
@@ -186,9 +186,9 @@
 
     <NODE id="perna2">
         
-        <TRANSLATION x="ff" y="ff" z="ff" />
+       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />-->
 
          <DESCENDANTS>
             <DESCENDANT id="perna" />
@@ -197,9 +197,9 @@
 
     <NODE id="perna3">
         
-        <TRANSLATION x="ff" y="ff" z="ff" />
+      <!--  <TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />-->
 
          <DESCENDANTS>
             <DESCENDANT id="perna" />
@@ -208,9 +208,9 @@
 
     <NODE id="perna4">
         
-        <TRANSLATION x="ff" y="ff" z="ff" />
+       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />-->
 
          <DESCENDANTS>
             <DESCENDANT id="perna" />
