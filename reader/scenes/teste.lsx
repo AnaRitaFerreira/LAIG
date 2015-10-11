@@ -126,7 +126,7 @@
     <NODE id="lparede">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /> <!--ADICIONAR TEXTURA-->
+        <TEXTURE id="textures/wall.jpg" /> <!--ADICIONAR TEXTURA-->
         <TRANSLATION x="0.0" y="0.0" z="15.0" />
         <SCALE sx="1.0" sy="10.0" sz="15.0"/>
         <ROTATION axis="y" angle="90" />
@@ -138,7 +138,7 @@
     <NODE id="rparede">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /> <!--ADICIONAR TEXTURA-->
+        <TEXTURE id="textures/wall.jpg" /> <!--ADICIONAR TEXTURA-->
         <SCALE sx="20.0" sy="10.0" sz="1.0"/>    
         <DESCENDANTS>
             <DESCENDANT id="myrect" />
@@ -147,7 +147,7 @@
     </NODE>
     <NODE id="chao">
         <MATERIAL id="null" />
-        <TEXTURE id="null" /> <!--ADICIONAR TEXTURA-->
+        <TEXTURE id="textures/floor.jpg" /> <!--ADICIONAR TEXTURA-->
         <TRANSLATION x="0.0" y="0.0" z="15" />
         <SCALE sx="20.0" sy="1.0" sz="15.0"/>
         <ROTATION axis="x" angle="-90" />
@@ -175,7 +175,7 @@
     <NODE id="mfront">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/gavetas.jpg" /><!--Adicionar textura-->
         <TRANSLATION x="0.0" y="0.0" z="2.0" />
         <DESCENDANTS>
             <DESCENDANT id="myrect" />  
@@ -185,7 +185,7 @@
     <NODE id="mback">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/wood.jpg" /><!--Adicionar textura-->
         <TRANSLATION x="1.0" y="0.0" z="0.0" />
         <ROTATION axis="y" angle="180" />
         <DESCENDANTS>
@@ -196,7 +196,7 @@
     <NODE id="mtop">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/wood.jpg" /><!--Adicionar textura-->
         <TRANSLATION x="0.0" y="1.0" z="1.0" />
         <ROTATION axis="x" angle="-90" />
         <DESCENDANTS>
@@ -207,7 +207,7 @@
     <NODE id="mbottom">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/wood.jpg" /><!--Adicionar textura-->
         <ROTATION axis="x" angle="90" />
         <DESCENDANTS>
             <DESCENDANT id="myrect" />  
@@ -217,7 +217,7 @@
     <NODE id="mleft">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/wood.jpg" /><!--Adicionar textura-->
         <ROTATION axis="y" angle="-90" />
         <DESCENDANTS>
             <DESCENDANT id="myrect" />  
@@ -227,7 +227,7 @@
     <NODE id="mright">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/wood.jpg" /><!--Adicionar textura-->
         <TRANSLATION x="1.0" y="0.0" z="1.0" />
         <ROTATION axis="y" angle="90" />
         <DESCENDANTS>
@@ -250,7 +250,7 @@
     <NODE id="cabeceira">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/wood.jpg" /><!--Adicionar textura-->
         <SCALE sx="5.0" sy="3.0" sz="1.0"/>
         <DESCENDANTS>
             <DESCENDANT id="myrect" /> 
@@ -261,7 +261,7 @@
      <NODE id="colchao">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/colcha.jpg" /><!--Adicionar textura-->
         <TRANSLATION x="8.0" y="1.0" z="0.0" />
         <SCALE sx="5.0" sy="1.0" sz="10.0"/>
         <DESCENDANTS>
@@ -274,7 +274,7 @@
       <NODE id="pernas">
 
         <MATERIAL id="null" />
-        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TEXTURE id="textures/wood.jpg" /><!--Adicionar textura-->
         <DESCENDANTS>
             <DESCENDANT id="perna1" /> 
             <DESCENDANT id="perna2" /> 
