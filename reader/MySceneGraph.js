@@ -79,28 +79,32 @@ MySceneGraph.prototype.parseGlobalsExample= function(rootElement) {
 	var sy = this.reader.getFloat(scale, "sy");
 	var sz = this.reader.getFloat(scale, "sz");
 	var length = this.reader.getFloat(reference, "length");
+
+	/*
 	this.background = this.reader.getRGBA(globals, 'background');
 	this.drawmode = this.reader.getItem(globals, 'drawmode', ["fill","line","point"]);
 	this.cullface = this.reader.getItem(globals, 'cullface', ["back","front","none", "frontandback"]);
 	this.cullorder = this.reader.getItem(globals, 'cullorder', ["ccw","cw"]);
+	*/
 
 	console.log("Globals read from file: {background=" + this.background + ", drawmode=" + this.drawmode + ", cullface=" + this.cullface + ", cullorder=" + this.cullorder + "}");
 
-	var tempList=rootElement.getElementsByTagName('INITIALS');
+	var init=rootElement.getElementsByTagName('INITIALS');
 
-	if (tempList == null  || tempList.length==0) {
+	if (init == null  || init.length==0) {
 		return "initials element is missing.";
 	}
 	
 	this.list=[];
 	// iterate over every element
-	var nnodes=tempList[0].children.length;
+	var nnodes=init[0].children.length;
 	for (var i=0; i< nnodes; i++)
 	{
-		var e=tempList[0].children[i];
+		var e=init[0].children[i];
 
 		// process each element and store its information
-		//this.list[e.id]=e.attributes.getNamedItem("coords").value;
+		//this.list[e.id]=e.attributes.getNamedItem("coords").value;  // store element of atribute
+
 		console.log("Read list item id "+ e.id+" with value "+this.list[e.id]);
 	};
 
@@ -128,5 +132,3 @@ MySceneGraph.prototype.onXMLError=function (message) {
 	console.error("XML Loading Error: "+message);	
 	this.loadedOk=false;
 };
-
-

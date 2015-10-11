@@ -2,45 +2,29 @@
 <SCENE>
 
 <INITIALS>
-    <globals background="0 0.5 0 1" drawmode="fill" shading="gouraud" cullface="none" cullorder="CCW" /> <!--é pra ficar?-->
-    <frustum near="0.1" far="0.2"/>                      <!-- frustum planes-->
-    <translate x="1" y="-1" z="2" />                 <!-- initial translate -->
+    <frustum near="0.1" far="200"/>                      <!-- frustum planes-->
+    <translation x="0.0" y="0.0" z="0.0" />                 <!-- initial translate -->
     <rotation axis="z" angle="0" />                  <!-- initial rotation 3 -->
-    <rotation axis="y" angle="-1" />                  <!-- initial rotation 2 -->
+    <rotation axis="y" angle="0" />                  <!-- initial rotation 2 -->
     <rotation axis="x" angle="0" />                  <!-- initial rotation 1 -->
     <scale sx="1" sy="1" sz="1" />                  <!-- initial scaling -->
-    <reference length="1" />                          <!-- axis length; "0" means no axis-->
+    <reference length="3.0" />                          <!-- axis length; "0" means no axis-->
 </INITIALS>
 
 
 <ILLUMINATION>
     <ambient r="0.5" g="0.5" b="0.7" a="0.5" />            <!-- global ambient -->
-    <doubleside value="true" />                          <!-- double or single side illum. -->
     <background r="0" g="0.5" b="0" a="1" />         <!-- background color -->
 </ILLUMINATION>
 
 <LIGHTS>
-    <LIGHT id="1">                                    <!-- light identifier -->
-        <enable value ="true" />                         <!-- enable/disable -->
-        <position x="3" y="7" z="0" w="1" />       <!-- light position -->
-        <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
-        <diffuse r="0.2" g="0.2" b="0.2" a="0.2" />        <!-- diffuse component -->
-        <specular r="0.2" g="0.2" b="0.2" a="0.2" />       <!-- specular component -->
-    </LIGHT>
-    <LIGHT id="2">                                    <!-- light identifier -->
-        <enable value ="true" />                         <!-- enable/disable -->
-        <position x="15" y="7" z="5" w="1" />       <!-- light position -->
-        <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
-        <diffuse r="0.2" g="f0.2f" b="0.2" a="0.2" />        <!-- diffuse component -->
-        <specular r="0.2" g="0.2" b="0.2" a="0.2" />       <!-- specular component -->
-    </LIGHT>
-    <LIGHT id="3">                                    <!-- light identifier -->
-        <enable value ="false" />                         <!-- enable/disable -->
-        <position x="3" y="7" z="0" w="1" />       <!-- light position -->
-        <ambient r="0.5" g="0.5" b="0.7" a="0.5" />        <!-- ambient component -->
-        <diffuse r="0.2" g="0.2" b="0.2" a="0.2" />        <!-- diffuse component -->
-        <specular r="0.2" g="0.2" b="0.2" a="0.2" />       <!-- specular component -->
-    </LIGHT>
+   <LIGHT id="lamp">
+            <enable value ="1" />
+            <position x="10" y="8.0" z="7.5" w="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+            <diffuse r="0.8" g="0.8" b="0.8" a="0.8" />
+            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
+   </LIGHT>
 
     <!-- NOTE: this block "LIGHT" must be repeated as necessary with different "id" -->
     
@@ -89,10 +73,10 @@
 
 <LEAVES>
     <!-- next lines define nodes of type leaf; they may be repeated, in any order, as necessary -->
-    <LEAF id="tampo" type="rectangle" args="1 1 2 2" />
-    <LEAF id="perna" type="cylinder" args="3 3 3 0 1" />
-    <LEAF id="ss" type="sphere" args="2 6 3" />
-    <LEAF id="ss" type="triangle" args="0 0 0 2 0 0 1 1 0" />
+    <LEAF id="myrect" type="rectangle" args="0 0 1 1" />
+    <LEAF id="mycyl" type="cylinder" args="1 1 1 12 12" />
+    <LEAF id="mysph" type="sphere" args="1 12 12" />
+    <!--<LEAF id="mytri" type="triangle" args="0 0 0 2 0 0 1 1 0" /> -->
 
     <!-- Parameters of the above primitives:                                                         -->
         <!--rectangle: 2D coordinates for left-top and right-bottom vertices.                        -->
@@ -104,117 +88,307 @@
 
 <NODES>
 
-    <ROOT id="mesa" />     <!-- identifier of root node of the scene graph; this node     -->
+    <ROOT id="cena" />     <!-- identifier of root node of the scene graph; this node     -->
                          <!--   must be defined in one of the following NODE declarations -->
 
-    <NODE id="mesa">       <!--   defines one intermediate node; may be repeated as necessary -->
+    <NODE id="cena">       <!--   defines one intermediate node; may be repeated as necessary -->
 
         <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
       <!--  <TRANSLATION x="ff" y="ff" z="ff" />
         <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />
+        <SCALE sx="ff" sy="ff" sz="ff" />-->
 
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
         <!-- declaring descendents, at least one node or one leaf must be present -->
         <DESCENDANTS>
+            <DESCENDANT id="cama" />
+            <DESCENDANT id="mesa" />     <!-- "ss" is the identifier of a node or of leaf; -->
+            <DESCENDANT id="mlamp" />                                <!--     may be repeatad as necessary. It can refer an -->
+            <DESCENDANT id="tlamp" />                              <!--      identifier of another node, later defined in the lsx file. -->
+            <DESCENDANT id="cabide" /> 
+            <DESCENDANT id="paredes" /> 
+        </DESCENDANTS>
+
+    </NODE>
+
+    <NODE id="paredes">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="lparede" />
+            <DESCENDANT id="rparede" />
+            <DESCENDANT id="chao" />   
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="lparede">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /> <!--ADICIONAR TEXTURA-->
+        <TRANSLATION x="0.0" y="0.0" z="15.0" />
+        <SCALE sx="1.0" sy="10.0" sz="15.0"/>
+        <ROTATION axis="y" angle="90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="rparede">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /> <!--ADICIONAR TEXTURA-->
+        <SCALE sx="20.0" sy="10.0" sz="1.0"/>    
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="chao">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /> <!--ADICIONAR TEXTURA-->
+        <TRANSLATION x="0.0" y="0.0" z="15" />
+        <SCALE sx="20.0" sy="1.0" sz="15.0"/>
+        <ROTATION axis="x" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />                                             
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mesa">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="5.0" y="0.0" z="0.0" />
+        <SCALE sx="2.0" sy="3.0" sz="1.0"/>
+        <DESCENDANTS>
+            <DESCENDANT id="mfront" />  
+            <DESCENDANT id="mback" /> 
+            <DESCENDANT id="mtop" /> 
+            <DESCENDANT id="mbottom" /> 
+            <DESCENDANT id="mleft" /> 
+            <DESCENDANT id="mright" /> 
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mfront">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="0.0" y="0.0" z="2.0" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mback">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="1.0" y="0.0" z="0.0" />
+        <ROTATION axis="y" angle="180" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mtop">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="0.0" y="1.0" z="1.0" />
+        <ROTATION axis="x" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mbottom">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <ROTATION axis="x" angle="90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mleft">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mright">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="1.0" y="0.0" z="1.0" />
+        <ROTATION axis="y" angle="90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+      <NODE id="cama">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="cabeceira" />  
             <DESCENDANT id="pernas" />
-            <DESCENDANT id="tampo" />     <!-- "ss" is the identifier of a node or of leaf; -->
-                                          <!--     may be repeatad as necessary. It can refer an -->
-                                          <!--      identifier of another node, later defined in the lsx file. -->
-            </DESCENDANTS>
+            <DESCENDANT id="colchao" />
+        </DESCENDANTS>
 
     </NODE>
+  
+    <NODE id="cabeceira">
 
-    <NODE id="tampo1">       <!--   defines one intermediate node; may be repeated as necessary -->
-
-        <!-- next two lines are mandatory -->
-        <MATERIAL id="nonRefle" />      <!-- declared material superimposes the material received from parent node -->
-                                  <!-- id="null" maintains material from parent node        -->
-        <TEXTURE id="madeira" />       <!-- declared texture superimposes the texture received from parent node -->
-                                  <!-- id="null" maintains texture from parent node       -->
-                                  <!-- id="clear" clears texture declaration received from parent node      -->
-
-        <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
-       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
-        <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />
-
-        <!-- declaring descendents, at least one node or one leaf must be present -->
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <SCALE sx="5.0" sy="3.0" sz="1.0"/>
         <DESCENDANTS>
-            <DESCENDANT id="tampo" />
-                <!-- "ss" is the identifier of a node or of leaf; -->
-                                          <!--     may be repeatad as necessary. It can refer an -->
-                                          <!--      identifier of another node, later defined in the lsx file. -->
+            <DESCENDANT id="myrect" /> 
         </DESCENDANTS>
 
     </NODE>
-    <NODE id="pernas">       <!--   defines one intermediate node; may be repeated as necessary -->
 
-        <!-- next two lines are mandatory -->
-        <MATERIAL id="shiny" />      <!-- declared material superimposes the material received from parent node -->
-                                  <!-- id="null" maintains material from parent node        -->
-        <TEXTURE id="metal" />       <!-- declared texture superimposes the texture received from parent node -->
-                                  <!-- id="null" maintains texture from parent node       -->
-                                  <!-- id="clear" clears texture declaration received from parent node      -->
+     <NODE id="colchao">
 
-        <!-- geom. transf. are optional and may be repeated, in any order, as necessary -->
-        <!--<TRANSLATION x="ff" y="ff" z="ff" />
-        <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />
-
-        <!-- declaring descendents, at least one node or one leaf must be present -->
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="8.0" y="1.0" z="0.0" />
+        <SCALE sx="5.0" sy="1.0" sz="10.0"/>
         <DESCENDANTS>
-            <DESCENDANT id="perna1" />
-            <DESCENDANT id="perna2" />
-            <DESCENDANT id="perna3" />
-            <DESCENDANT id="perna4" />      <!-- "ss" is the identifier of a node or of leaf; -->
-                                          <!--     may be repeatad as necessary. It can refer an -->
-                                          <!--      identifier of another node, later defined in the lsx file. -->
+            <DESCENDANT id="cubo" /> 
         </DESCENDANTS>
 
     </NODE>
 
-    <NODE id="perna1">
-        
-       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
-        <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />-->
 
-         <DESCENDANTS>
-            <DESCENDANT id="perna" />
+      <NODE id="pernas">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <DESCENDANTS>
+            <DESCENDANT id="perna1" /> 
+            <DESCENDANT id="perna2" /> 
+            <DESCENDANT id="perna3" /> 
+            <DESCENDANT id="perna4" /> 
         </DESCENDANTS>
+
     </NODE>
+     <NODE id="perna1">
 
-    <NODE id="perna2">
-        
-       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
-        <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />-->
-
-         <DESCENDANTS>
-            <DESCENDANT id="perna" />
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="8.0" y="0.0" z="0.0" />
+        <DESCENDANTS>
+            <DESCENDANT id="cubo" /> 
         </DESCENDANTS>
+
     </NODE>
+     <NODE id="perna2">
 
-    <NODE id="perna3">
-        
-      <!--  <TRANSLATION x="ff" y="ff" z="ff" />
-        <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />-->
-
-         <DESCENDANTS>
-            <DESCENDANT id="perna" />
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="12.0" y="0.0" z="0.0" />
+        <DESCENDANTS>
+            <DESCENDANT id="cubo" /> 
         </DESCENDANTS>
+
     </NODE>
+     <NODE id="perna3">
 
-    <NODE id="perna4">
-        
-       <!-- <TRANSLATION x="ff" y="ff" z="ff" />
-        <ROTATION axis="cc" angle="ff" />
-        <SCALE sx="ff" sy="ff" sz="ff" />-->
-
-         <DESCENDANTS>
-            <DESCENDANT id="perna" />
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="8.0" y="0.0" z="10.0" />
+        <SCALE sx="1.0" sy="2.0" sz="1.0"/>
+        <DESCENDANTS>
+            <DESCENDANT id="cubo" /> 
         </DESCENDANTS>
+
+    </NODE>
+     <NODE id="perna4">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" /><!--Adicionar textura-->
+        <TRANSLATION x="12.0" y="0.0" z="10.0" />
+        <SCALE sx="1.0" sy="2.0" sz="1.0"/>
+        <DESCENDANTS>
+            <DESCENDANT id="cubo" /> 
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="cubo">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="front" />  
+            <DESCENDANT id="back" /> 
+            <DESCENDANT id="top" /> 
+            <DESCENDANT id="bottom" /> 
+            <DESCENDANT id="left" /> 
+            <DESCENDANT id="right" /> 
+        </DESCENDANTS>
+
+    </NODE>
+   
+    <NODE id="front">
+
+        <TRANSLATION x="0.0" y="0.0" z="2.0" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="back">
+
+        <TRANSLATION x="1.0" y="0.0" z="0.0" />
+        <ROTATION axis="y" angle="180" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="top">
+
+        <TRANSLATION x="0.0" y="1.0" z="1.0" />
+        <ROTATION axis="x" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="bottom">
+
+        <ROTATION axis="x" angle="90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="left">
+
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="right">
+        <TRANSLATION x="1.0" y="0.0" z="1.0" />
+        <ROTATION axis="y" angle="90" />
+        <DESCENDANTS>
+            <DESCENDANT id="myrect" />  
+        </DESCENDANTS>
+
     </NODE>
 </NODES>
 
