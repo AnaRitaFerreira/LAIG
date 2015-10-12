@@ -65,6 +65,21 @@
         <ambient r="0.2" g="0.2" b="0.2" a="0.2" />         <!-- ambient reflection -->
         <emission r="0.1" g="0.1" b="0.1" a="0.1" />        <!-- emission component -->
      </MATERIAL>
+     <MATERIAL id="lampada_white">
+            <shininess value="1" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="0.1" />
+            <ambient r="1.0" g="1.0" b="1.0" a="0.1" />
+            <emission r="1.0" g="0.95" b="0.95" a="0.8" />
+     </MATERIAL>
+
+     <MATERIAL id="abajour_white">
+          <shininess value="1" />
+          <specular r="0.0" g="0.0" b="0.0" a="0.0" />
+          <diffuse r="0.5" g="0.5" b="0.5" a="0.5" />
+          <ambient r="0.5" g="0.5" b="0.5" a="0.2" />
+          <emission r="0.5" g="0.5" b="0.5" a="0.5" />
+     </MATERIAL>
 
     <!-- NOTE: the "MATERIAL" block may be repeated as required. Each defined material requires a distinct "id" -->
 
@@ -153,6 +168,71 @@
         <ROTATION axis="x" angle="-90" />
         <DESCENDANTS>
             <DESCENDANT id="myrect" />                                             
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="mlamp">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="-4.5" y="-12.0" z="-4.0" />
+        <DESCENDANTS>
+            <DESCENDANT id="lamp" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="tlamp">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="lamp" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="lamp">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="fio" />  
+            <DESCENDANT id="lampada" /> 
+            <DESCENDANT id="abajour" />   
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="fio">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="10.5" y="17.0" z="5.0" />
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="mycyl" /> 
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="abajour">
+
+        <MATERIAL id="abajour_white" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="10.5" y="15.0" z="5.0" />
+        <SCALE sx="0.5" sy="0.65" sz="0.5"/>
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="mycyl" /> 
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="lampada">
+
+        <MATERIAL id="lampada_white" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="10.5" y="15.0" z="5.0" />
+        <SCALE sx="0.5" sy="0.5" sz="0.5"/>
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="mysph" /> 
         </DESCENDANTS>
 
     </NODE>
