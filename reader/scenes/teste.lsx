@@ -121,7 +121,6 @@
             <DESCENDANT id="mesa" />     <!-- "ss" is the identifier of a node or of leaf; -->
             <DESCENDANT id="mlamp" />                                <!--     may be repeatad as necessary. It can refer an -->
             <DESCENDANT id="tlamp" />                              <!--      identifier of another node, later defined in the lsx file. -->
-            <DESCENDANT id="cabide" /> 
             <DESCENDANT id="paredes" /> 
         </DESCENDANTS>
 
