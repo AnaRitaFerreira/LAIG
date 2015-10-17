@@ -25,6 +25,13 @@
             <diffuse r="0.8" g="0.8" b="0.8" a="0.8" />
             <specular r="0.6" g="0.6" b="0.6" a="1.0" />
    </LIGHT>
+   <LIGHT id="lamp2">
+            <enable value ="1" />
+            <position x="10" y="8.0" z="7.5" w="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+            <diffuse r="0.8" g="0.8" b="0.8" a="0.8" />
+            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
+   </LIGHT>
 
     <!-- NOTE: this block "LIGHT" must be repeated as necessary with different "id" -->
     
@@ -33,15 +40,31 @@
 
 
 <TEXTURES>
-    <TEXTURE id="madeira">
-        <file path="textures/wood.png" />                             <!-- path to file -->
-        <amplif_factor s="0.5" t="0.5" />                <!-- x/s, y/t -->
-    </TEXTURE>
 
-    <TEXTURE id="metal">
-        <file path="textures/metal.png" />                             <!-- path to file -->
-        <amplif_factor s="0.5" t="0.5" />                <!-- x/s, y/t -->
-    </TEXTURE>
+    <TEXTURE id="colcha"
+        <file path="textures/colcha.jpg"
+        <amplif_factor s="0.5" t="0.5" />
+     </TEXTURE>
+
+    <TEXTURE id="floor"
+        <file path="textures/floor.jpg"
+        <amplif_factor s="0.5" t="0.5" />
+     </TEXTURE>   
+
+    <TEXTURE id="gavetas"
+        <file path="textures/gavetas.jpg"
+        <amplif_factor s="0.5" t="0.5" />
+     </TEXTURE> 
+    
+    <TEXTURE id="wall"
+        <file path="textures/wall.jpg"
+        <amplif_factor s="0.5" t="0.5" />
+     </TEXTURE> 
+
+     <TEXTURE id="wood"
+        <file path="textures/wood.jpg"
+        <amplif_factor s="0.5" t="0.5" />
+     </TEXTURE> 
 
     <!-- NOTE: this block "TEXTURE" must be repeated as necessary with different "id" -->
     
