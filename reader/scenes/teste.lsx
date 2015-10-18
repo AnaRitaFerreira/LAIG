@@ -41,28 +41,28 @@
 
 <TEXTURES>
 
-    <TEXTURE id="colcha"
-        <file path="textures/colcha.jpg"
+    <TEXTURE id="colcha">
+        <file path="textures/colcha.jpg"/>
         <amplif_factor s="0.5" t="0.5" />
      </TEXTURE>
 
-    <TEXTURE id="floor"
-        <file path="textures/floor.jpg"
+    <TEXTURE id="floor">
+        <file path="textures/floor.jpg"/>
         <amplif_factor s="0.5" t="0.5" />
      </TEXTURE>   
 
-    <TEXTURE id="gavetas"
-        <file path="textures/gavetas.jpg"
+    <TEXTURE id="gavetas">
+        <file path="textures/gavetas.jpg"/>
         <amplif_factor s="0.5" t="0.5" />
      </TEXTURE> 
     
-    <TEXTURE id="wall"
-        <file path="textures/wall.jpg"
+    <TEXTURE id="wall">
+        <file path="textures/wall.jpg"/>
         <amplif_factor s="0.5" t="0.5" />
      </TEXTURE> 
 
-     <TEXTURE id="wood"
-        <file path="textures/wood.jpg"
+     <TEXTURE id="wood">
+        <file path="textures/wood.jpg"/>
         <amplif_factor s="0.5" t="0.5" />
      </TEXTURE> 
 

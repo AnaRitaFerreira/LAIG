@@ -3,7 +3,7 @@ function Node(){
 	this.texture=null;
 	this.m =null;
 	this.descendants=[];
-};
+}
 
 Node.prototype.push=function(nodename){
 	this.descendants.push(nodename);
