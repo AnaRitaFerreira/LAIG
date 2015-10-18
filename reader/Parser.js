@@ -167,14 +167,9 @@ Parser.prototype.parseIllumination= function(rootElement){
 	var ambient =  getUniqueElement(illumination,'ambient');
 	var background =  getUniqueElement(illumination,'background');
 
-	var ar = this.reader.getFloat(ambient, 'r');
-	var ag = this.reader.getFloat(ambient, 'g');
-	var ab = this.reader.getFloat(ambient, 'b');
-	var aa = this.reader.getFloat(ambient, 'a');
-	var br = this.reader.getFloat(background, 'r');
-	var bg = this.reader.getFloat(background, 'g');
-	var bb = this.reader.getFloat(background, 'b');
-	var ba = this.reader.getFloat(background, 'a');
+
+	this.illumination.ambient = this.rgbaElement(ambient);
+	this.illumination.background = this.rgbaElement(background);
 	console.log(ambient);
 	console.log(background);
 }
@@ -187,39 +182,38 @@ Parser.prototype.parseIllumination= function(rootElement){
 
 
 Parser.prototype.parseLights= function(rootElement){
-	var lights = getUniqueElement(rootElement,'LIGHTS');
-	var light =  lights.getElementsByTagName('LIGHT');
+	var array_lights = getUniqueElement(rootElement,'LIGHTS');
+	var light =  array_lights.getElementsByTagName('LIGHT');
 	if (light == null) {
 		return ("light element is missing.");
 	}
 
 	for(var i = 0; i < light.length; i++){
-		var id= this.reader.getString(light[i], "id");
+		
+		var lgt = new Light(light[i].getAttribute('id'));
+
 		var enable = getUniqueElement(light[i],'enable');
 		var position = getUniqueElement(light[i],'position');
 		var ambient = getUniqueElement(light[i],'ambient');
 		var diffuse = getUniqueElement(light[i],'diffuse');
 		var specular = getUniqueElement(light[i],'specular');
 
-		var value = this.reader.getBoolean(enable, 'value');
-		var x = this.reader.getFloat(position, 'x');
-		var y = this.reader.getFloat(position, 'y');
-		var z = this.reader.getFloat(position, 'z');
-		var w = this.reader.getFloat(position, 'w');
-		var ar = this.reader.getFloat(ambient, 'r');
-		var ag= this.reader.getFloat(ambient, 'g');
-		var ab= this.reader.getFloat(ambient, 'b');
-		var aa= this.reader.getFloat(ambient, 'a');
-		var dr = this.reader.getFloat(diffuse, 'r');
-		var dg= this.reader.getFloat(diffuse, 'g');
-		var db= this.reader.getFloat(diffuse, 'b');
-		var da= this.reader.getFloat(diffuse, 'a');
-		var sr = this.reader.getFloat(specular, 'r');
-		var sg= this.reader.getFloat(specular, 'g');
-		var sb= this.reader.getFloat(specular, 'b');
-		var sa= this.reader.getFloat(specular, 'a');
-
-		console.log(light[i]);
+		
+		lgt.enable = this.reader.getBoolean(enable, 'value');
+        var pos = {};
+		pos.x = this.reader.getFloat(position, 'x');
+		pos.y = this.reader.getFloat(position, 'y');
+		pos.z = this.reader.getFloat(position, 'z');
+		pos.w = this.reader.getFloat(position, 'w');
+    	lgt.position=pos;
+    	console.log(pos);
+		lgt.ambient = this.rgbaElement(ambient);
+		lgt.diffuse = this.rgbaElement(diffuse);
+		lgt.specular = this.rgbaElement(specular);
+		
+		
+		console.log(lgt);
+		this.lights.push(lgt);
 	}
 }
 
@@ -232,23 +226,27 @@ Parser.prototype.parseLights= function(rootElement){
 
 
 Parser.prototype.parseTextures= function(rootElement) {
-	var textures = getUniqueElement(rootElement,'TEXTURES');
-	var texture =  textures.getElementsByTagName('TEXTURE');
+	var array_textures = getUniqueElement(rootElement,'TEXTURES');
+	var texture =  array_textures.getElementsByTagName('TEXTURE');
 	if (texture == null) {
 		return ("texture element is missing.");
 	}
 
 	for(var i = 0; i < texture.length; i++){
-		var id= this.reader.getString(texture[i], "id");
+		var txt = new Texture(texture[i].getAttribute('id'));
 		var file = getUniqueElement(texture[i],'file');
 		var amplif_factor = getUniqueElement(texture[i],'amplif_factor');
 
-		var path = this.reader.getString(file, 'path');
-		var s = this.reader.getFloat(amplif_factor, 's');
-		var t = this.reader.getFloat(amplif_factor, 't');
+		txt.file = this.reader.getString(file, 'path');
+		var ampfac ={};
+		ampfac.s = this.reader.getFloat(amplif_factor, 's');
+		ampfac.t = this.reader.getFloat(amplif_factor, 't');
+		txt.amplif_factor=ampfac;
 
 		console.log(texture[i]);
+		this.textures.push(texture);
 	}
+	
 }	
 
 
@@ -283,9 +281,9 @@ Parser.prototype.parseMaterials= function(rootElement) {
 		mat.specular = this.rgbaElement(specular);
 		mat.emission = this.rgbaElement(emission);
 
-		console.log(material[i]);
+		console.log(mat);
 
-		this.materials.push(material);
+		this.materials.push(mat);
 	}
 }
 
@@ -298,17 +296,59 @@ Parser.prototype.parseMaterials= function(rootElement) {
 
 
 Parser.prototype.parseLeaves= function(rootElement) {
-	var leaves = getUniqueElement(rootElement,'LEAVES');
-	var leaf =  leaves.getElementsByTagName('LEAF');
+	var array_leaves = getUniqueElement(rootElement,'LEAVES');
+	var leaf =  array_leaves.getElementsByTagName('LEAF');
 	if (leaf == null) {
 		return ("leaf element is missing.");
 	}
 
 	for(var i = 0; i < leaf.length; i++){
-		var id= this.reader.getString(leaf[i], "id");
-		var type= this.reader.getString(leaf[i], "type");
+		var lf = new Leaf(leaf[i].getAttribute('id'));
+		lf.type= this.reader.getItem(leaf[i], 'type', ['rectangle', 'cylinder', 'sphere', 'triangle']);
+		var args_aux = leaf[i].getAttribute('args').split(" ");
+		if (lf.type=="rectangle") {
+                if (args_aux.length != 4)
+                    return "Invalid number of arguments for type 'rectangle'";
+
+            for (var j = 0; j < args_aux.length; j++)
+                    lf.args.push(parseFloat(args_aux[j]));
+			}
+        else if(lf.type=="cylinder"){
+                if (args_aux.length != 5)
+                    return "Invalid number of arguments for type 'cylinder'";
+
+                lf.args.push(parseFloat(args_aux[0]));
+                lf.args.push(parseFloat(args_aux[1]));
+                lf.args.push(parseFloat(args_aux[2]));
+                lf.args.push(parseInt(args_aux[3]));
+                lf.args.push(parseInt(args_aux[4]));
+             }
+        else if(lf.type=="sphere"){
+          
+                if (args_aux.length != 3)
+                    return "Invalid number of arguments for type 'sphere'";
+
+                lf.args.push(parseFloat(args_aux[0]));
+                lf.args.push(parseInt(args_aux[1]));
+                lf.args.push(parseInt(args_aux[2]));
+        }
+         else if(lf.type=="triangle"){
+                if (args_aux.length != 9)
+                    return "Invalid number of arguments for type 'triangle'";
+
+                for (j = 0; j < args_aux.length; j++)
+                    lf.args.push(parseFloat(args_aux[j]));
+
+         }
+         else{ 
+                return "Type " + "\"" + lf.type + "\" not valid.";
+         }
+          
+        
+
 		//var args=this.reader.
-		console.log(leaf[i]);
+		console.log(lf);
+		this.leaves.push(lf);
 	}
 }
 
