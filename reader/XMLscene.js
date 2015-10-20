@@ -142,7 +142,7 @@ XMLscene.prototype.onGraphLoaded = function () {
 
 	var text = this.graph.textures;
 	for (var i = 0; i < text.length; i++) {
-		var texture = new ScTexture(this, text[i].id, text[i].path, text[i].amplif_factor);
+		texture = new ScTexture(this, text[i].id, text[i].path, text[i].amplif_factor);
 
 		this.textures.push(texture);
 	}
@@ -177,8 +177,6 @@ XMLscene.prototype.getMaterial = function(id) {
 	for (var i = 0; i < this.materials.length; i++)
 		if (id == this.materials[i].id) 
 			return this.materials[i];
-
-	return null;
 };
 
 XMLscene.prototype.getTexture = function(id) {
@@ -188,8 +186,6 @@ XMLscene.prototype.getTexture = function(id) {
 	for (var i = 0; i < this.textures.length; i++)
 		if (id == this.textures[i].id) 
 			return this.textures[i];
-
-	return null;
 };
 
 XMLscene.prototype.initLeaves = function(){
@@ -257,11 +253,11 @@ XMLscene.prototype.DFS = function(node, currMaterial, currTexture, currMatrix) {
 	if (node.material == "null") 
 		nextMat = currMaterial;
 
-	var nextTex = node.texture.id;
+	var nextTex = node.texture;
 	
-	if (node.texture.id == "null") 
+	if (node.texture == "null") 
 		nextTex = currTexture;
-	else if (node.texture.id == "clear") 
+	else if (node.texture == "clear") 
 		nextTex = null;
 
 	var nextMatrix = mat4.create();
@@ -311,35 +307,33 @@ XMLscene.prototype.display = function () {
 
     // Nodes
     for (i = 0; i < this.nodes.length; i++) {
-
-        var node = this.nodes[i];
-        this.pushMatrix();
-        if(node.material != null)
-            node.material.setTexture(node.texture);
-        else
-            if(node.material == null)
-            {
-                node.material = this.materialDefault;
-                node.material.setTexture(node.texture);
-            }
-            if (node.texture != null) {
-                node.primitive.updateTex(node.texture.amplif_factor.s, node.texture.amplif_factor.t);
-            }
+    	var node = this.nodes[i];
+    	this.pushMatrix();
+    	if(node.material != null)
+    		node.material.setTexture(node.texture);
+    	else{
+    		node.material = this.materialDefault;
+    		node.material.setTexture(node.texture);
+    	}
+    	if (node.texture != null) {
+    		node.primitive.updateTex(node.texture.amplif_factor.s, node.texture.amplif_factor.t);
+    	}
 
 
-            if(node.material != null)
-                node.material.apply();
-            this.multMatrix(node.m);
-           
-            node.primitive.display();
-            this.popMatrix();
-        }
+    	if(node.material != null)
+    		node.material.apply();
+    	this.multMatrix(node.m);
+    	
+    	node.primitive.display();
+    	this.popMatrix();
+    }
 
 
     
 	this.axis.display();
 
 this.shader.unbind();
+
 	// ---- END Background, camera and axis setup
 
 	// it is important that things depending on the proper loading of the graph

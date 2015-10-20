@@ -249,7 +249,7 @@ Parser.prototype.parseTextures= function(rootElement) {
 		var file = getUniqueElement(texture[i],'file');
 		var amplif_factor = getUniqueElement(texture[i],'amplif_factor');
 
-		txt.file = this.reader.getString(file, 'path');
+		txt.path = this.reader.getString(file, 'path');
 		var ampfac ={};
 		ampfac.s = this.reader.getFloat(amplif_factor, 's');
 		ampfac.t = this.reader.getFloat(amplif_factor, 't');
@@ -397,8 +397,10 @@ Parser.prototype.parseNodes= function(rootElement) {
 	for(var i = 0; i < nodes.length; i++){
 
 		var nd = new Node(nodes[i].getAttribute('id'));
-		nd.material = getUniqueElement(nodes[i],'MATERIAL');
-		nd.texture = getUniqueElement(nodes[i],'TEXTURE');
+		var mat =getUniqueElement(nodes[i],'MATERIAL');
+		var text = getUniqueElement(nodes[i],'TEXTURE');
+		nd.material = mat.id;
+		nd.texture = text.id;
 		console.log(nd.id);
 
 		var child = nodes[i].children;
