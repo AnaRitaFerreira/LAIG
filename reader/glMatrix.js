@@ -85,5 +85,3 @@ var pMatrix = mat4.create();
 		var canvas = document.getElementById("canvas");
 		drawScene();
     }
-
-</script>

@@ -1,8 +1,10 @@
-function Node(){
+function Node(id){
+	this.id = id;
 	this.material=null;
 	this.texture=null;
-	this.m =null;
+	this.m = mat4.create();
 	this.descendants=[];
+	this.primitive=null;
 }
 
 Node.prototype.push=function(nodename){

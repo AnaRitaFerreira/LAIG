@@ -11,7 +11,12 @@ function getUrlVars() {
     return vars;
 }	 
 
-serialInclude(['../lib/CGF.js', 'XMLscene.js', 'Parser.js', 'node.js', 'illumination.js', 'initials.js', 'leaf.js', 'light.js', 'material.js', 'texture.js',
+serialInclude(['../lib/CGF.js', 
+                'XMLscene.js', 'Parser.js', 'node.js', 
+                'illumination.js', 'initials.js', 'leaf.js', 
+                'light.js', 'material.js', 'texture.js', 'glMatrix.js',
+                'primitives/MyRect.js', 'primitives/MyCylinder.js', 'primitives/MySphere.js',
+                'primitives/MyTriangle.js',
 
 main=function()
 {
@@ -30,7 +35,7 @@ main=function()
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
 	
-	var filename=getUrlVars()['file'] || "teste.lsx";
+	var filename=getUrlVars()['file'] || "LAIG_TP1_LSX_T01_G03_v1.lsx";
 
 	// create and load graph, and associate it to scene. 
 	// Check console for loading errors

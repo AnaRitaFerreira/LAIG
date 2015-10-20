@@ -26,6 +26,7 @@ function Parser(filename, scene) {
     this.materials = [];
     this.leaves = [];
     this.root = null;
+    this.root_node=null;
     this.nodes = [];
 
 }
@@ -44,7 +45,7 @@ Parser.prototype.onXMLReady=function() {
 	var error = this.parseTextures(rootElement);
 	var error = this.parseMaterials(rootElement);
 	var error = this.parseLeaves(rootElement);
-	//var error = this.parseNodes(rootElement);
+	var error = this.parseNodes(rootElement);
 
 	if (error != null) {
 		this.onXMLError(error);
@@ -84,7 +85,6 @@ function getUniqueElement(nametag,tag) {
 	return elems[0];
 }
 
-
 Parser.prototype.rgbaElement = function(element) {
     var rgba = {};
     rgba.r = this.reader.getFloat(element, 'r');
@@ -92,6 +92,15 @@ Parser.prototype.rgbaElement = function(element) {
     rgba.b = this.reader.getFloat(element, 'b');
     rgba.a = this.reader.getFloat(element, 'a');
     return rgba;
+};
+
+Parser.prototype.findNode = function(id) {
+    for (i = 0; i < this.nodes.length; i++){
+        if (this.nodes[i].id == id) 
+        	return this.nodes[i];
+    }
+
+    return null;
 };
 
 
@@ -170,9 +179,11 @@ Parser.prototype.parseIllumination= function(rootElement){
 
 	this.illumination.ambient = this.rgbaElement(ambient);
 	this.illumination.background = this.rgbaElement(background);
-	console.log(ambient);
-	console.log(background);
-}
+	console.log("background R: " + this.illumination.background.r);
+	console.log("background G: " + this.illumination.background.g);
+	console.log("background B: " + this.illumination.background.b);
+	console.log("background A: " + this.illumination.background.a);
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +210,7 @@ Parser.prototype.parseLights= function(rootElement){
 		var specular = getUniqueElement(light[i],'specular');
 
 		
-		lgt.enable = this.reader.getBoolean(enable, 'value');
+		lgt.enabled = this.reader.getBoolean(enable, 'value');
         var pos = {};
 		pos.x = this.reader.getFloat(position, 'x');
 		pos.y = this.reader.getFloat(position, 'y');
@@ -213,6 +224,7 @@ Parser.prototype.parseLights= function(rootElement){
 		
 		
 		console.log(lgt);
+		console.log("LUZES:" + lgt.enabled);
 		this.lights.push(lgt);
 	}
 }
@@ -243,8 +255,8 @@ Parser.prototype.parseTextures= function(rootElement) {
 		ampfac.t = this.reader.getFloat(amplif_factor, 't');
 		txt.amplif_factor=ampfac;
 
-		console.log(texture[i]);
-		this.textures.push(texture);
+		
+		this.textures.push(txt);
 	}
 	
 }	
@@ -281,7 +293,7 @@ Parser.prototype.parseMaterials= function(rootElement) {
 		mat.specular = this.rgbaElement(specular);
 		mat.emission = this.rgbaElement(emission);
 
-		console.log(mat);
+		console.log("AMB R:" + mat.ambient.r);
 
 		this.materials.push(mat);
 	}
@@ -306,109 +318,135 @@ Parser.prototype.parseLeaves= function(rootElement) {
 		var lf = new Leaf(leaf[i].getAttribute('id'));
 		lf.type= this.reader.getItem(leaf[i], 'type', ['rectangle', 'cylinder', 'sphere', 'triangle']);
 		var args_aux = leaf[i].getAttribute('args').split(" ");
-		if (lf.type=="rectangle") {
-                if (args_aux.length != 4)
-                    return "Invalid number of arguments for type 'rectangle'";
+		switch(lf.type){
+			case "rectangle":{
+				if (args_aux.length != 4)
+					return "Invalid number of arguments for type 'rectangle'";
 
-            for (var j = 0; j < args_aux.length; j++)
-                    lf.args.push(parseFloat(args_aux[j]));
+				for (var j = 0; j < args_aux.length; j++)
+					lf.args.push(parseFloat(args_aux[j]));
+				console.log("LEAF NAME:" + args_aux);
+
+				break;
 			}
-        else if(lf.type=="cylinder"){
-                if (args_aux.length != 5)
-                    return "Invalid number of arguments for type 'cylinder'";
+			case "cylinder":{
+				if (args_aux.length != 5)
+					return "Invalid number of arguments for type 'cylinder'";
 
-                lf.args.push(parseFloat(args_aux[0]));
-                lf.args.push(parseFloat(args_aux[1]));
-                lf.args.push(parseFloat(args_aux[2]));
-                lf.args.push(parseInt(args_aux[3]));
-                lf.args.push(parseInt(args_aux[4]));
-             }
-        else if(lf.type=="sphere"){
-          
-                if (args_aux.length != 3)
-                    return "Invalid number of arguments for type 'sphere'";
+				lf.args.push(parseFloat(args_aux[0]));
+				lf.args.push(parseFloat(args_aux[1]));
+				lf.args.push(parseFloat(args_aux[2]));
+				lf.args.push(parseInt(args_aux[3]));
+				lf.args.push(parseInt(args_aux[4]));
+			}
+			break;
 
-                lf.args.push(parseFloat(args_aux[0]));
-                lf.args.push(parseInt(args_aux[1]));
-                lf.args.push(parseInt(args_aux[2]));
-        }
-         else if(lf.type=="triangle"){
-                if (args_aux.length != 9)
-                    return "Invalid number of arguments for type 'triangle'";
+			case "triangle":{
 
-                for (j = 0; j < args_aux.length; j++)
-                    lf.args.push(parseFloat(args_aux[j]));
+				if (args_aux.length != 9)
+					return "Invalid number of arguments for type 'triangle'";
 
-         }
-         else{ 
-                return "Type " + "\"" + lf.type + "\" not valid.";
-         }
-          
-        
+				for (j = 0; j < args_aux.length; j++)
+					lf.args.push(parseFloat(args_aux[j]));
+				break;
+			}
+			case "sphere":{
+				if (args_aux.length != 3)
+					return "Invalid number of arguments for type 'sphere'";
+
+				lf.args.push(parseFloat(args_aux[0]));
+				lf.args.push(parseInt(args_aux[1]));
+				lf.args.push(parseInt(args_aux[2]));
+				break;
+			}
+			default:{
+				return "Type " + "\"" + lf.type + "\" not valid.";
+			}
+
+		}
 
 		//var args=this.reader.
-		console.log(lf);
 		this.leaves.push(lf);
 	}
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//												     NODES    														 //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*
+
+
 Parser.prototype.parseNodes= function(rootElement) {
-	var nodes = getUniqueElement(rootElement,'NODES');
-	var root = getUniqueElement(nodes,'ROOT');
-	var rootid=this.reader.getString(root[0],"id");
-	var node =  nodes.getElementsByTagName('NODE');
-	if (node == null) {
+
+	var array_nodes = getUniqueElement(rootElement,'NODES');
+	var root_nd = getUniqueElement(array_nodes,'ROOT');
+	this.root=this.reader.getString(root_nd,"id");
+	this.root_node = new Node(this.root);
+	console.log('Root ID: ' + this.root_node.id);
+
+	var nodes =  array_nodes.getElementsByTagName('NODE');
+	
+	if (nodes == null) {
 		return ("node element is missing.");
 	}
 
-	for(var i = 0; i < node.length; i++){
-		var id= this.reader.getString(node[i], "id");
-		var translation = getUniqueElement(node[i],'TRANSLATION');
-		var rotation = getUniqueElement(node[i],'ROTATION');
-		var scale = getUniqueElement(node[i],'SCALE');
-		var material = getUniqueElement(node[i],'MATERIAL');
-		var texture = getUniqueElement(node[i],'TEXTURE');
 
-		var matid = this.reader.getString(material, 'id');
-		var desc = nodes[i].getElementsByTagName('DESCENDANTS')[0];
-        if (desc == null) return "No DESCENDANTS  found";
+	for(var i = 0; i < nodes.length; i++){
 
-        var dlist = desc.getElementsByTagName('DESCENDANT');
-        if (dlist.length < 1) return "DESCENDANTS not found";
+		var nd = new Node(nodes[i].getAttribute('id'));
+		nd.material = getUniqueElement(nodes[i],'MATERIAL');
+		nd.texture = getUniqueElement(nodes[i],'TEXTURE');
+		console.log(nd.id);
 
-        for (j = 0; j < dlist.length; j++) {
-           // node.descendants.push(dlist[j].getAttribute('id'));
-        }
-
-        
+		var child = nodes[i].children;
+		for(j=0; j<child.length; j++){
+			if(child[j].tagName == "TRANSLATION"){
+				var translation = [];
+				translation.push(this.reader.getFloat(child[j], "x"));
+				translation.push(this.reader.getFloat(child[j], "y"));
+				translation.push(this.reader.getFloat(child[j], "z"));
+				console.log("Translation: " + translation);
+				mat4.translate(nd.m, nd.m, translation);
+			}
+			else if(child[j].tagName == "SCALE"){
+				var scale = [];
+				scale.push(this.reader.getFloat(child[j], "sx"));
+				scale.push(this.reader.getFloat(child[j], "sy"));
+				scale.push(this.reader.getFloat(child[j], "sz"));
+				console.log("Scale: " + scale);
+				mat4.scale(nd.m, nd.m, scale);
+			}
+			else if(child[j].tagName == "ROTATION"){
+				var rotation = [0,0,0];
+				var axis = this.reader.getItem(child[j], "axis", ["x", "y", "z"]);
+				var angle = this.reader.getFloat(child[j], "angle") * (Math.PI / 180);
+				rotation[["x", "y", "z"].indexOf(axis)] = 1;
+				console.log("Rotation: " + rotation);
+				mat4.rotate(nd.m, nd.m, angle, rotation);
+			}
+		}
 		
-		console.log(node[i]);
-	}}
+		var desc = getUniqueElement(nodes[i], 'DESCENDANTS');
+		var dlist = desc.getElementsByTagName('DESCENDANT');
+		if (dlist.length < 1) 
+			return "No DESCENDANT found";
 
-	/*x = xmlDoc.getElementsByTagName("Node")[0];
-	xlen = x.childNodes.length;
-	y = x.firstChild;
-
-	txt = "";
-	for (i = 0; i <xlen; i++) {
-  	// Process only element nodes (type 1)
- 	 if (y.nodeType == 1) {
-   		 txt += y.nodeName + "<br>";
-	  }
- 	 y = y.nextSibling;
-	};
-}; 
-*/
+		for (j = 0; j < dlist.length; j++) {
+			nd.descendants.push(dlist[j].getAttribute('id'));
+		}
+		console.log(nd.material)
+		this.nodes.push(nd);
+	}
+}
 
 
 /*
  * Callback to be executed on any read error
  */
  
-
 Parser.prototype.onXMLError=function (message) {
 	console.error("XML Loading Error: "+message);	
 	this.loadedOk=false;
