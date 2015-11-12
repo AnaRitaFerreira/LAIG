@@ -358,7 +358,7 @@ Parser.prototype.parseLeaves= function(rootElement) {
 
 	for(var i = 0; i < leaf.length; i++){
 		var lf = new Leaf(leaf[i].getAttribute('id'));
-		lf.type= this.reader.getItem(leaf[i], 'type', ['rectangle', 'cylinder', 'sphere', 'triangle']);
+		lf.type= this.reader.getItem(leaf[i], 'type', ['rectangle', 'cylinder', 'sphere', 'triangle', 'plane', 'patch', 'vehicle', 'terrain']);
 		var args_aux = leaf[i].getAttribute('args').split(" ");
 		switch(lf.type){
 			case "rectangle":{
@@ -400,6 +400,30 @@ Parser.prototype.parseLeaves= function(rootElement) {
 				lf.args.push(parseInt(args_aux[1]));
 				lf.args.push(parseInt(args_aux[2]));
 				break;
+			}
+			case "plane":{
+				lf.parts=this.reader.getFloat(leaf[i],'parts');
+				break;
+			}
+			case "patch":{
+				lf.order=this.reader.getFloat(leaf[i],'order');
+				lf.partsU=this.reader.getFloat(leaf[i],'partsU');
+				lf.partsV=this.reader.getFloat(leaf[i],'partsV');
+				var child = leaf[i].children;
+				for(j=0; j<child.length; j++){
+					if(child[j].tagName == "controlpoint"){
+						var cntr_p=[];
+    					cntr_p.push(this.reader.getFloat(child[j],'x'));
+    					cntr_p.push(this.reader.getFloat(child[j],'y'));
+    					cntr_p.push(this.reader.getFloat(child[j],'z'));
+    					lf.control_points.push(cntr_p);
+					}
+				}
+				break;
+			}
+			case "terrain":{
+				lf.texture=this.reader.getString('texture');
+				lf.heightmap=this.reader.getString('heightmap');
 			}
 			default:{
 				return "Type " + "\"" + lf.type + "\" not valid.";
@@ -470,6 +494,9 @@ Parser.prototype.parseNodes= function(rootElement) {
 				rotation[["x", "y", "z"].indexOf(axis)] = 1;
 				console.log("Rotation: " + rotation);
 				mat4.rotate(nd.m, nd.m, angle, rotation);
+			}
+			else if(child[j].tagName=="ANIMATIONREF"){
+				var anim_ref=child[j].getAttribute('id');
 			}
 		}
 		
