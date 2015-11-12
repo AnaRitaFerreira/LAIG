@@ -128,7 +128,7 @@ XMLscene.prototype.setInterface = function(interface){
 
 XMLscene.prototype.initLights = function(){
 
-	this.shader.bind();
+	//this.shader.bind();
 
 	for(var i = 0; i < this.graph.lights.length; i++){
 
@@ -148,7 +148,7 @@ XMLscene.prototype.initLights = function(){
 		this.lights[i].setVisible(true);
 		this.lights[i].update();
 	}
-	this.shader.unbind();
+	//this.shader.unbind();
 
 	//this.interface.callLight();
 };
@@ -287,7 +287,7 @@ XMLscene.prototype.DFS = function(node, currMaterial, currTexture, currMatrix) {
 
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
-    this.shader.bind();
+   // this.shader.bind();
 
 	
 	// Clear image and depth buffer everytime we update the scene
@@ -338,7 +338,7 @@ XMLscene.prototype.display = function () {
     
 	this.axis.display();
 
-this.shader.unbind();
+//this.shader.unbind();
 
 	// ---- END Background, camera and axis setup
 

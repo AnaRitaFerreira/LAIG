@@ -141,6 +141,12 @@
 
 </MATERIALS>
 
+<ANIMATIONS>
+    <ANIMATION id="lin" span="10" type="linear" >
+        <controlpoint xx="0" yy="3" zz"0" />
+    </ANIMATION>
+    <ANIMATION id="circ" span="15" type="circular" center="5 5 5" radius="5" startang="0" rotang="30" />
+</ANIMATIONS>
 
 <!-- The leaves -->
 <LEAVES>
@@ -148,6 +154,12 @@
     <LEAF id="cylinder1" type="cylinder" args="4 1 1 20 20" /> 
     <LEAF id="sphere1" type="sphere" args="2 20 20" />
     <LEAF id="triangle1" type="triangle" args="2 0 12 12 0 2 0 0 0" />
+    <LEAF id="plano" type="plane" parts="5" />
+    <LEAF id="patch" type="patch" order="2" partsU="3" partsV="5">
+        <controlpoint x="1.0" y="0.0" z="1.0" />
+    </LEAF>
+    <LEAF id="veiculo" type="vehicle" />
+    <LEAF id="shade" type="terrain" texture="terreno.jpg" heightmap="mapAltura.jpg" />
 </LEAVES>
 
 
@@ -294,7 +306,8 @@
     <!-- Street bench -->
     <NODE id="bancos">       
         <MATERIAL id="lightMaterial" />     
-        <TEXTURE id="banco" />       			
+        <TEXTURE id="banco" />  
+        <ANIMATIONREF id="lin" />     			
 
         <DESCENDANTS>
        		<DESCENDANT id="banco1" />          
@@ -306,7 +319,8 @@
     <!-- One bench -->
     <NODE id="banco2">       
         <MATERIAL id="null" />     
-        <TEXTURE id="null" />       			
+        <TEXTURE id="null" />    
+        <ANIMATIONREF id="circ" />    			
 
         <TRANSLATION x="7.5" y="-2" z="21" />
         

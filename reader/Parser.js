@@ -351,7 +351,9 @@ Parser.prototype.parseAnimations= function(rootElement) {
 
 Parser.prototype.parseLeaves= function(rootElement) {
 	var array_leaves = getUniqueElement(rootElement,'LEAVES');
+	console.log(array_leaves);
 	var leaf =  array_leaves.getElementsByTagName('LEAF');
+	console.log("chega");
 	if (leaf == null) {
 		return ("leaf element is missing.");
 	}
@@ -410,8 +412,10 @@ Parser.prototype.parseLeaves= function(rootElement) {
 				lf.partsU=this.reader.getFloat(leaf[i],'partsU');
 				lf.partsV=this.reader.getFloat(leaf[i],'partsV');
 				var child = leaf[i].children;
+				console.log("chega");
 				for(j=0; j<child.length; j++){
 					if(child[j].tagName == "controlpoint"){
+						console.log(child[j].tagName);
 						var cntr_p=[];
     					cntr_p.push(this.reader.getFloat(child[j],'x'));
     					cntr_p.push(this.reader.getFloat(child[j],'y'));
@@ -424,6 +428,7 @@ Parser.prototype.parseLeaves= function(rootElement) {
 			case "terrain":{
 				lf.texture=this.reader.getString('texture');
 				lf.heightmap=this.reader.getString('heightmap');
+				break;
 			}
 			default:{
 				return "Type " + "\"" + lf.type + "\" not valid.";
