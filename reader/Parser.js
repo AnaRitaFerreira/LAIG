@@ -24,7 +24,7 @@ function Parser(filename, scene) {
     this.lights = [];
     this.textures = [];
     this.materials = [];
-    this.animations={};
+    this.animations=[];
     this.leaves = [];
     this.root = null;
     this.root_node=null;
@@ -317,30 +317,29 @@ Parser.prototype.parseAnimations= function(rootElement) {
 		var id = animation[i].getAttribute('id');
     	var span = this.reader.getFloat(animation[i],'span');
     	var type = this.reader.getString(animation[i],'type');
-    	var args =[];
 
     	if(type=="linear"){
+    		var linear = new LinearAnimation(id, span);
     		var ctr_pt=animation[i].getElementsByTagName('controlpoint');
     		for(var j=0;j<ctr_pt.length;j++){
     			var cntr_p=[];
     			cntr_p.push(this.reader.getFloat(ctr_pt[j],'xx'));
     			cntr_p.push(this.reader.getFloat(ctr_pt[j],'yy'));
     			cntr_p.push(this.reader.getFloat(ctr_pt[j],'zz'));
-    			args.push(cntr_p);
+    			linear.control_points.push(cntr_p);
     		}
+    		this.animations.push(linear);
     	}
     	else if(type=="circular"){
-    		args["center"] = this.reader.getVector3(animation[i],'center');
-        	args["radius"] = this.reader.getFloat(animation[i],'radius');
-        	args["startang"] = this.reader.getFloat(animation[i],'startang');
-        	args["rotang"] = this.reader.getFloat(animation[i],'rotang');
+    		var circular = new CircularAnimation(id, span);
+    		var center = this.reader.getVector3(animation[i],'center');
+        	var radius = this.reader.getFloat(animation[i],'radius');
+        	var startang = this.reader.getFloat(animation[i],'startang');
+        	var rotang = this.reader.getFloat(animation[i],'rotang');
+        	circular.center=center; circular.radius= radius; circular.startang= startang; circular.rotang= rotang; 
+        	this.animations.push(circular);
     	}
-
-    	 var anim = new Animation(id,span,type,args);
-    	 this.animation.push(anim);
-
 	}
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

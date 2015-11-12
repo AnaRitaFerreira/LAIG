@@ -1,7 +1,5 @@
-function Animation(id,span,type,args){
-
+function Animation(id){
+	
 	this.id=id;
 	this.span=span;
-	this.type=type;
-	this.args=args;
 }
