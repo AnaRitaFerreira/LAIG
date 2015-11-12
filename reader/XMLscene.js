@@ -34,32 +34,6 @@ XMLscene.prototype.init = function (application) {
 	this.materialDefault = new CGFappearance(this);
 };
 
-XMLscene.prototype.initLights = function(){
-
-	this.shader.bind();
-
-	for(var i = 0; i < this.graph.lights.length; i++){
-
-		var lgt = this.graph.lights[i];
-
-		if(lgt.enabled)
-			this.lights[i].enable();
-		else
-			this.lights[i].disable();
-
-		this.lightsEnabled[lgt.id] = lgt.enabled;
-
-		this.lights[i].setPosition(lgt.position.x,lgt.position.y,lgt.position.z,lgt.position.w);
-		this.lights[i].setAmbient(lgt.ambient.r,lgt.ambient.g,lgt.ambient.b,lgt.ambient.a);
-		this.lights[i].setDiffuse(lgt.diffuse.r,lgt.diffuse.g,lgt.diffuse.b,lgt.diffuse.a);
-		this.lights[i].setSpecular(lgt.specular.r,lgt.specular.g,lgt.specular.b,lgt.specular.a);
-		this.lights[i].setVisible(true);
-		this.lights[i].update();
-	}
-	this.shader.unbind();
-
-	//this.interface.callLight();
-};
 
 XMLscene.prototype.updateLights = function() {
 	for (i = 0; i < this.lights.length; i++)
@@ -113,17 +87,11 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setShininess(10.0);	
 };
 
-XMLscene.prototype.setInterface = function(interface){
-	this.interface=interface;
-};
-
-// Handler called when the graph is finally loaded. 
-// As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function () {
 	
 	this.axis = new CGFaxis(this,this.graph.initials.reference);
 	
-	this.applyInitials();
+	
 	this.initLights();
 	this.gl.clearColor(this.graph.illumination.background.r, this.graph.illumination.background.g,this.graph.illumination.background.b, this.graph.illumination.background.a);
 
@@ -153,6 +121,40 @@ XMLscene.prototype.onGraphLoaded = function () {
 	this.initNodes();
 	
 };
+
+XMLscene.prototype.setInterface = function(interface){
+	this.interface=interface;
+};
+
+XMLscene.prototype.initLights = function(){
+
+	this.shader.bind();
+
+	for(var i = 0; i < this.graph.lights.length; i++){
+
+		var lgt = this.graph.lights[i];
+
+		if(lgt.enabled)
+			this.lights[i].enable();
+		else
+			this.lights[i].disable();
+
+		this.lightsEnabled[lgt.id] = lgt.enabled;
+
+		this.lights[i].setPosition(lgt.position.x,lgt.position.y,lgt.position.z,lgt.position.w);
+		this.lights[i].setAmbient(lgt.ambient.r,lgt.ambient.g,lgt.ambient.b,lgt.ambient.a);
+		this.lights[i].setDiffuse(lgt.diffuse.r,lgt.diffuse.g,lgt.diffuse.b,lgt.diffuse.a);
+		this.lights[i].setSpecular(lgt.specular.r,lgt.specular.g,lgt.specular.b,lgt.specular.a);
+		this.lights[i].setVisible(true);
+		this.lights[i].update();
+	}
+	this.shader.unbind();
+
+	//this.interface.callLight();
+};
+
+// Handler called when the graph is finally loaded. 
+// As loading is asynchronous, this may be called already after the application has started the run loop
 
 function ScTexture(scene, id, path, amplif_factor) {
 	CGFtexture.call(this, scene, path);
@@ -302,8 +304,11 @@ XMLscene.prototype.display = function () {
 
 	this.setDefaultAppearance();
 	//this.update();
+	if(this.graph.loadedOK){
       for (var i = 0; i < this.lights.length; i++)
         this.lights[i].update();
+    	console.log("Luzes" + lights[i]);
+
 
     // Nodes
     for (i = 0; i < this.nodes.length; i++) {
@@ -327,7 +332,8 @@ XMLscene.prototype.display = function () {
     	node.primitive.display();
     	this.popMatrix();
     }
-
+	this.applyInitials();
+}
 
     
 	this.axis.display();

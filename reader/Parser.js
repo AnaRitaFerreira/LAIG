@@ -24,6 +24,7 @@ function Parser(filename, scene) {
     this.lights = [];
     this.textures = [];
     this.materials = [];
+    this.animations={};
     this.leaves = [];
     this.root = null;
     this.root_node=null;
@@ -44,6 +45,7 @@ Parser.prototype.onXMLReady=function() {
 	var error = this.parseLights(rootElement);
 	var error = this.parseTextures(rootElement);
 	var error = this.parseMaterials(rootElement);
+	var error = this.parseAnimations(rootElement);
 	var error = this.parseLeaves(rootElement);
 	var error = this.parseNodes(rootElement);
 
@@ -299,6 +301,47 @@ Parser.prototype.parseMaterials= function(rootElement) {
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//												Animations															 //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Parser.prototype.parseAnimations= function(rootElement) {
+	var array_animation= getUniqueElement(rootElement, 'ANIMATIONS');
+	var animation = array_animation.getElementsByTagName('ANIMATION');
+	if(animation==null)
+		return ("animation element is missing.");
+
+	for(var i=0; i<animation.length;i++){
+		var id = animation[i].getAttribute('id');
+    	var span = this.reader.getFloat(animation[i],'span');
+    	var type = this.reader.getString(animation[i],'type');
+    	var args =[];
+
+    	if(type=="linear"){
+    		var ctr_pt=animation[i].getElementsByTagName('controlpoint');
+    		for(var j=0;j<ctr_pt.length;j++){
+    			var cntr_p=[];
+    			cntr_p.push(this.reader.getFloat(ctr_pt[j],'xx'));
+    			cntr_p.push(this.reader.getFloat(ctr_pt[j],'yy'));
+    			cntr_p.push(this.reader.getFloat(ctr_pt[j],'zz'));
+    			args.push(cntr_p);
+    		}
+    	}
+    	else if(type=="circular"){
+    		args["center"] = this.reader.getVector3(animation[i],'center');
+        	args["radius"] = this.reader.getFloat(animation[i],'radius');
+        	args["startang"] = this.reader.getFloat(animation[i],'startang');
+        	args["rotang"] = this.reader.getFloat(animation[i],'rotang');
+    	}
+
+    	 var anim = new Animation(id,span,type,args);
+    	 this.animation.push(anim);
+
+	}
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
