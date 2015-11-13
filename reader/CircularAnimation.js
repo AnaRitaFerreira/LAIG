@@ -1,5 +1,5 @@
 function CircularAnimation(id, span){
-	Animation.call(this,id,span);
+	Animation.call(id,span);
 	this.id=id;
 	this.span=span;
 	this.center=null; 

@@ -29,7 +29,7 @@ main=function()
 
     app.setScene(myScene);
     app.setInterface(myInterface);
-
+    //myScene.setInterface(myInterface);
     myInterface.setActiveCamera(myScene.camera);
 
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 

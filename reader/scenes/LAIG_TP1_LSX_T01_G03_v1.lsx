@@ -143,7 +143,7 @@
 
 <ANIMATIONS>
     <ANIMATION id="lin" span="10" type="linear" >
-        <controlpoint xx="0" yy="3" zz"0" />
+        <controlpoint xx="0" yy="3" zz="0" />
     </ANIMATION>
     <ANIMATION id="circ" span="15" type="circular" center="5 5 5" radius="5" startang="0" rotang="30" />
 </ANIMATIONS>

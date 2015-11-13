@@ -315,8 +315,8 @@ Parser.prototype.parseAnimations= function(rootElement) {
 
 	for(var i=0; i<animation.length;i++){
 		var id = animation[i].getAttribute('id');
-    	var span = this.reader.getFloat(animation[i],'span');
-    	var type = this.reader.getString(animation[i],'type');
+    	var span = animation[i].getAttribute('span');
+    	var type = animation[i].getAttribute('type');
 
     	if(type=="linear"){
     		var linear = new LinearAnimation(id, span);
@@ -351,9 +351,7 @@ Parser.prototype.parseAnimations= function(rootElement) {
 
 Parser.prototype.parseLeaves= function(rootElement) {
 	var array_leaves = getUniqueElement(rootElement,'LEAVES');
-	console.log(array_leaves);
 	var leaf =  array_leaves.getElementsByTagName('LEAF');
-	console.log("chega");
 	if (leaf == null) {
 		return ("leaf element is missing.");
 	}
@@ -361,7 +359,10 @@ Parser.prototype.parseLeaves= function(rootElement) {
 	for(var i = 0; i < leaf.length; i++){
 		var lf = new Leaf(leaf[i].getAttribute('id'));
 		lf.type= this.reader.getItem(leaf[i], 'type', ['rectangle', 'cylinder', 'sphere', 'triangle', 'plane', 'patch', 'vehicle', 'terrain']);
-		var args_aux = leaf[i].getAttribute('args').split(" ");
+		console.log("LEAF TYPE: " + lf.type);
+		if(lf.type!="terrain" && lf.type!="vehicle" && lf.type!="patch" && lf.type!="plane"){
+			var args_aux = leaf[i].getAttribute('args').split(" ");
+		}
 		switch(lf.type){
 			case "rectangle":{
 				if (args_aux.length != 4)
@@ -435,7 +436,6 @@ Parser.prototype.parseLeaves= function(rootElement) {
 			}
 
 		}
-
 		//var args=this.reader.
 		this.leaves.push(lf);
 	}
