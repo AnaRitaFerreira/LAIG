@@ -315,11 +315,11 @@ Parser.prototype.parseAnimations= function(rootElement) {
 
 	for(var i=0; i<animation.length;i++){
 		var id = animation[i].getAttribute('id');
-    	var span = animation[i].getAttribute('span');
+    	var span = this.reader.getFloat(animation[i],'span');
     	var type = animation[i].getAttribute('type');
 
     	if(type=="linear"){
-    		var linear = new LinearAnimation(id, span);
+    		var linear = new LinearAnimation(this.scene,id, span);
     		var ctr_pt=animation[i].getElementsByTagName('controlpoint');
     		for(var j=0;j<ctr_pt.length;j++){
     			var cntr_p=[];
@@ -327,12 +327,15 @@ Parser.prototype.parseAnimations= function(rootElement) {
     			cntr_p.push(this.reader.getFloat(ctr_pt[j],'yy'));
     			cntr_p.push(this.reader.getFloat(ctr_pt[j],'zz'));
     			linear.control_points.push(cntr_p);
+
     		}
+    		console.log("Control: "+ linear.control_points[0][0]);
     		this.animations.push(linear);
     	}
     	else if(type=="circular"){
-    		var circular = new CircularAnimation(id, span);
+    		var circular = new CircularAnimation(this.scene,id, span);
     		var center = this.reader.getVector3(animation[i],'center');
+    		console.log(center);
         	var radius = this.reader.getFloat(animation[i],'radius');
         	var startang = this.reader.getFloat(animation[i],'startang');
         	var rotang = this.reader.getFloat(animation[i],'rotang');
@@ -501,7 +504,7 @@ Parser.prototype.parseNodes= function(rootElement) {
 				mat4.rotate(nd.m, nd.m, angle, rotation);
 			}
 			else if(child[j].tagName=="ANIMATIONREF"){
-				var anim_ref=child[j].getAttribute('id');
+				nd.anim_ref.push(child[j].getAttribute('id'));
 			}
 		}
 		

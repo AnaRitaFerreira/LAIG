@@ -5,6 +5,7 @@ function Node(id){
 	this.m = mat4.create();
 	this.descendants=[];
 	this.primitive=null;
+	this.anim_ref=[];
 }
 
 Node.prototype.push=function(nodename){

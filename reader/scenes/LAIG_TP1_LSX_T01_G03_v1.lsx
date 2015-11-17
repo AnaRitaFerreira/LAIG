@@ -15,7 +15,7 @@
 <!-- Illumination and clear colour -->
 <ILLUMINATION>
     <ambient r="0.2" g="0.2" b="0.2" a="1" />       
-    <background r="0" g="0" b="0" a="1" />          
+    <background r="0.5" g="0.5" b="0.5" a="1" />          
 </ILLUMINATION>
 
 
@@ -145,7 +145,7 @@
     <ANIMATION id="lin" span="10" type="linear" >
         <controlpoint xx="0" yy="3" zz="0" />
     </ANIMATION>
-    <ANIMATION id="circ" span="15" type="circular" center="5 5 5" radius="5" startang="0" rotang="30" />
+    <ANIMATION id="circ" span="15" type="circular" center="5 5 5" radius="5" startang="0" rotang="180" />
 </ANIMATIONS>
 
 <!-- The leaves -->
@@ -307,7 +307,7 @@
     <NODE id="bancos">       
         <MATERIAL id="lightMaterial" />     
         <TEXTURE id="banco" />  
-        <ANIMATIONREF id="lin" />     			
+             			
 
         <DESCENDANTS>
        		<DESCENDANT id="banco1" />          
@@ -333,7 +333,8 @@
     <!-- Another bench -->
      <NODE id="banco1">      
         <MATERIAL id="null" />     
-        <TEXTURE id="null" />       			
+        <TEXTURE id="null" />
+        <ANIMATIONREF id="lin" />       			
 
         <TRANSLATION x="7.5" y="-2" z="4" />
 

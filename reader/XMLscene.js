@@ -12,26 +12,35 @@ XMLscene.prototype.init = function (application) {
 
     this.initCameras();
 
-    
-    this.enableTextures(true);
-
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     this.gl.clearDepth(100.0);
     this.gl.enable(this.gl.DEPTH_TEST);
 	this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
+    this.enableTextures(true);
 
-	
+	this.lightsEnabled = [];
 	this.grafo=[];
 
 	this.textures = [];
     this.materials = [];
     this.leaves = [];
     this.nodes = [];
-    this.lightsEnabled = [];
+   
 	this.axis=new CGFaxis(this);
-	this.materialDefault = new CGFappearance(this);
+	this.setUpdatePeriod(10);
+	//this.materialDefault = new CGFappearance(this);
+};
+
+XMLscene.prototype.initCameras = function () {
+    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+};
+XMLscene.prototype.setDefaultAppearance = function () {
+    this.setAmbient(0.2, 0.4, 0.8, 1.0);
+    this.setDiffuse(0.2, 0.4, 0.8, 1.0);
+    this.setSpecular(0.2, 0.4, 0.8, 1.0);
+    this.setShininess(10.0);	
 };
 
 XMLscene.prototype.initLights = function(){
@@ -102,16 +111,8 @@ XMLscene.prototype.applyInitials = function(){
 	console.log(initMatrix);
 };
 
-XMLscene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
-};
 
-XMLscene.prototype.setDefaultAppearance = function () {
-    this.setAmbient(0.2, 0.4, 0.8, 1.0);
-    this.setDiffuse(0.2, 0.4, 0.8, 1.0);
-    this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);	
-};
+
 
 /*
 XMLscene.prototype.setInterface = function(interface){
@@ -148,6 +149,8 @@ XMLscene.prototype.onGraphLoaded = function () {
 
 		this.textures.push(texture);
 	}
+
+	this.initAnim();
 
 
 	this.initLeaves();
@@ -189,6 +192,7 @@ XMLscene.prototype.getTexture = function(id) {
 		if (id == this.textures[i].id) 
 			return this.textures[i];
 };
+
 
 XMLscene.prototype.initLeaves = function(){
 	for( var i=0; i < this.graph.leaves.length; i++)
@@ -239,11 +243,11 @@ XMLscene.prototype.initLeaves = function(){
 
 XMLscene.prototype.initNodes = function() {
 	var nodes_list = this.graph.nodes;	
-	this.DFS(this.graph.nodes[0], this.graph.nodes[0].material.id, this.graph.nodes[0].texture.id,  this.graph.nodes[0].m);
+	this.nodeProcessor(this.graph.nodes[0], this.graph.nodes[0].material.id, this.graph.nodes[0].texture.id,  this.graph.nodes[0].m);
 };
 
 
-XMLscene.prototype.update = function(){
+XMLscene.prototype.update = function(current_time){
 
 	for(light in this.lightsEnabled)
 	{
@@ -260,23 +264,63 @@ XMLscene.prototype.update = function(){
        		}
    		}
 	}
+	for(anim in this.graph.animations){
+
+		//if(this.graph.animations[anim].current)
+			this.graph.animations[anim].update(current_time);
+	}
 };
 
+XMLscene.prototype.initAnim = function(){
 
-XMLscene.prototype.DFS = function(node, currMaterial, currTexture, currMatrix) {
+	for(var i=0; i < this.graph.animations.length; i++){
+		this.graph.animations[i].init();
+	}
+}
+
+XMLscene.prototype.nodeProcessor = function(node, currMaterial, currTexture, currMatrix) {
 	var nextMat = node.material;
 	if (node.material == "null") 
 		nextMat = currMaterial;
 
 	var nextTex = node.texture;
 	
+	
 	if (node.texture == "null") 
 		nextTex = currTexture;
 	else if (node.texture == "clear") 
 		nextTex = null;
 
+	
+	var anim=node.anim_ref[0];
+	console.log(node.anim_ref[0]);
+
 	var nextMatrix = mat4.create();
 	mat4.multiply(nextMatrix, currMatrix, node.m);
+	
+	if(anim != undefined ){
+	var animMatrix;
+		/*for(){
+
+			var an = this.graph.animations[i];
+			console.log(this.graph.animations[i]);
+			console.log(this.graph.animations[anim[i]]);
+			an.apply();
+		}*/
+		for(var i=0; i < this.graph.animations.length; i++)
+		{
+			if(this.graph.animations[i].id==anim){
+				animMatrix =  this.graph.animations[i].getMatrix();
+				if (animMatrix != null){
+				this.multMatrix(animMatrix);
+				break;
+				}
+			}
+		}
+				
+	}	
+
+	
 	console.log("DESCENDANTS:" + node.descendants);
 	for (var i = 0; i < node.descendants.length; i++) {
 		var nextNode = this.graph.findNode(node.descendants[i]);
@@ -294,7 +338,7 @@ XMLscene.prototype.DFS = function(node, currMaterial, currTexture, currMatrix) {
 			this.nodes.push(aux);
 			continue;
 		}
-		this.DFS(nextNode, nextMat, nextTex, nextMatrix);
+		this.nodeProcessor(nextNode, nextMat, nextTex, nextMatrix);
 	}
 };
 
