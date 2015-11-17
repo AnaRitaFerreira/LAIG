@@ -105,6 +105,14 @@ Parser.prototype.findNode = function(id) {
     return null;
 };
 
+function getAllElements(tag, nametag){
+
+	var tempInitials = tag.getElementsByTagName(nametag);
+	if (tempInitials == null) {
+	    return (nametag + " element in " + tag + " is missing.");
+	}
+	return tempInitials;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -415,18 +423,23 @@ Parser.prototype.parseLeaves= function(rootElement) {
 				lf.order=this.reader.getFloat(leaf[i],'order');
 				lf.partsU=this.reader.getFloat(leaf[i],'partsU');
 				lf.partsV=this.reader.getFloat(leaf[i],'partsV');
-				var child = leaf[i].children;
-				console.log("chega");
-				for(j=0; j<child.length; j++){
-					if(child[j].tagName == "controlpoint"){
-						console.log(child[j].tagName);
-						var cntr_p=[];
-    					cntr_p.push(this.reader.getFloat(child[j],'x'));
-    					cntr_p.push(this.reader.getFloat(child[j],'y'));
-    					cntr_p.push(this.reader.getFloat(child[j],'z'));
-    					lf.control_points.push(cntr_p);
-					}
+				var c_point=getAllElements(leaf[i],"controlpoint");
+				var numPoints= Math.pow((lf.order+1),2);
+				if(numPoints != c_point.length){
+					console.error("Number of control points are wrong");
+					return;
 				}
+				var points=[];
+				for(j=0; j<c_point.length; j++){
+						var cntr_p= new Array(4);
+    					cntr_p[0]=this.reader.getFloat(c_point[j],'x');
+    					cntr_p[1]=this.reader.getFloat(c_point[j],'y');
+    					cntr_p[2]=this.reader.getFloat(c_point[j],'z');
+    					cntr_p[3]=1;
+    					points[j] = cntr_p;
+					
+				}
+				lf.control_points = points;
 				break;
 			}
 			case "terrain":{
@@ -435,7 +448,7 @@ Parser.prototype.parseLeaves= function(rootElement) {
 				break;
 			}
 			default:{
-				return "Type " + "\"" + lf.type + "\" not valid.";
+				return "Type " + "/" + lf.type + "/not valid.";
 			}
 
 		}

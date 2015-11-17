@@ -154,9 +154,24 @@
     <LEAF id="cylinder1" type="cylinder" args="4 1 1 20 20" /> 
     <LEAF id="sphere1" type="sphere" args="2 20 20" />
     <LEAF id="triangle1" type="triangle" args="2 0 12 12 0 2 0 0 0" />
-    <LEAF id="plano" type="plane" parts="5" />
-    <LEAF id="patch" type="patch" order="2" partsU="3" partsV="5">
-        <controlpoint x="1.0" y="0.0" z="1.0" />
+    <LEAF id="plano" type="plane" parts="15" />
+    <LEAF id="window" type="patch" order="3" partsU="50" partsV="50">
+        <controlpoint x="-0.300" y="-0.750," z="-0.450" />
+        <controlpoint x="-0.500" y="-0.000," z="-0.700" />
+        <controlpoint x="-0.500" y="-0.000," z="-0.700" />
+        <controlpoint x="-0.300" y="0.750" z="-0.450" />
+        <controlpoint x="-0.100" y="-0.750," z="-0.400" />
+        <controlpoint x="-0.600" y="-0.500," z="0.600" />
+        <controlpoint x="-0.600" y="0.500" z=" 0.600" />
+        <controlpoint x="-0.100" y="0.750" z="-0.400" />
+        <controlpoint x="0.100" y="-0.750 " z="-0.400" />
+        <controlpoint x="0.600" y="-0.500 " z="0.600" />
+        <controlpoint x="0.600" y="0.500" z="0.600" />
+        <controlpoint x="0.100" y="0.750" z="-0.400" />
+        <controlpoint x="0.300" y="-0.750" z="-0.450" />
+        <controlpoint x="0.500" y="-0.000" z="-0.700" />
+        <controlpoint x="0.500" y="-0.000" z="-0.700" />
+        <controlpoint x="0.300" y="0.750" z="-0.450" />
     </LEAF>
     <LEAF id="veiculo" type="vehicle" />
     <LEAF id="shade" type="terrain" texture="terreno.jpg" heightmap="mapAltura.jpg" />
@@ -180,9 +195,25 @@
             <DESCENDANT id="arvores" />   
             <DESCENDANT id="chao" />
             <DESCENDANT id="bancos" />
+            <DESCENDANT id="janela" />
         </DESCENDANTS>
 
     </NODE>
+
+    <NODE id="janela">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <SCALE sx="2" sy="3" sz="2"/>
+        <TRANSLATION x="0" y="1.45" z="-5" />
+        <ROTATION axis="x" angle="-90" />
+        <ROTATION axis="z" angle="90" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="window" />            
+        </DESCENDANTS>
+    </NODE>
+
 
     <!-- The floor -->
     <NODE id="chao">      

@@ -163,14 +163,14 @@ function ScTexture(scene, id, path, amplif_factor) {
 	CGFtexture.call(this, scene, path);
 	this.id = id;
 	this.amplif_factor = amplif_factor;
-}
+};
 ScTexture.prototype = Object.create(CGFtexture.prototype);
 ScTexture.prototype.constructor = ScTexture;
 
 function ScMaterial(scene, id) {
 	CGFappearance.call(this, scene);
 	this.id = id;
-}
+};
 ScMaterial.prototype = Object.create(CGFappearance.prototype);
 ScMaterial.prototype.constructor = ScMaterial;
 
@@ -225,9 +225,15 @@ XMLscene.prototype.initLeaves = function(){
 				break;
 			}
 			case "plane":{
+				var primitive = new MyPlane(this,leaf.parts);
+				primitive.id = leaf.id;
+				this.leaves.push(primitive);
 				break;
 			}
 			case "patch":{
+				var primitive = new MyPatch(this,leaf.order, leaf.partsU, leaf.partsV, leaf.control_points);
+				primitive.id = leaf.id;
+				this.leaves.push(primitive);
 				break;
 			}
 			case "vehicle":{
@@ -239,7 +245,7 @@ XMLscene.prototype.initLeaves = function(){
 		
 		}
 	}
-}
+};
 
 XMLscene.prototype.initNodes = function() {
 	var nodes_list = this.graph.nodes;	
