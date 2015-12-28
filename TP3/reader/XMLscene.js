@@ -29,10 +29,12 @@ XMLscene.prototype.init = function (application) {
     this.nodes = [];
     this.a_material = null;
     this.a_texture = null;
-   
+   	this.desc = 0;
+
 	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(10);
-	//this.materialDefault = new CGFappearance(this);
+
+	this.setPickEnabled(true);
 };
 
 XMLscene.prototype.initCameras = function () {
@@ -71,6 +73,23 @@ XMLscene.prototype.initLights = function(){
 
 	//this.interface.callLight();
 };
+//Picking
+XMLscene.prototype.logPicking = function ()
+{
+	if (this.pickMode == false) {
+		if (this.pickResults != null && this.pickResults.length > 0) {
+			for (var i=0; i< this.pickResults.length; i++) {
+				var obj = this.pickResults[i][0];
+				if (obj)
+				{
+					var customId = this.pickResults[i][1];				
+					console.log("Picked object: " + obj + ", with pick id " + customId);
+				}
+			}
+			this.pickResults.splice(0,this.pickResults.length);
+		}		
+	}
+}
 
 XMLscene.prototype.updateLights = function() {
 	for (i = 0; i < this.lights.length; i++)
@@ -133,7 +152,8 @@ XMLscene.prototype.onGraphLoaded = function () {
 
 	this.initLeaves();
 
-	this.nodeProcessor(this.graph.nodes[0]);
+	//this.nodeProcessor(this.graph.nodes[0]);
+
 };
 
 XMLscene.prototype.isLeaf = function(id){
@@ -318,7 +338,6 @@ XMLscene.prototype.nodeProcessor = function(node) {
 	}	
 	*/
 	
-	console.log("DESCENDANTS:" + node.descendants);
 	for (var i = 0; i < node.descendants.length; i++) {
 		if(this.isLeaf(node.descendants[i])){
 			if(this.a_texture==undefined){
@@ -336,6 +355,8 @@ XMLscene.prototype.nodeProcessor = function(node) {
 };
 
 XMLscene.prototype.draw = function(leaf, s, t){
+	this.desc++;
+	this.registerForPick(this.desc, leaf);
 	switch(leaf.type){
 			case "rectangle":{
 				leaf.updateTex(s,t);
@@ -372,10 +393,109 @@ XMLscene.prototype.draw = function(leaf, s, t){
 		}
 }
 
+XMLscene.prototype.createCube = function () {
+	//this.pushMatrix();
+
+
+	var args = [0, 1, 1, 0]; 
+	var matrixf = mat4.create();
+	var matrixb = mat4.create();
+	var matrixl = mat4.create();
+	var matrixr = mat4.create();
+	var matrixt = mat4.create();
+	var matrixbt = mat4.create();
+	var front_translation = [0, 0, 1];
+	var back_rotation = [0,1,0];
+	var back_translation = [1,0,0];
+	var left_rotation = [0,1,0];
+	var right_rotation = [0,1,0];
+	var right_translation = [1,0,1];
+	var top_translation = [0,1,1];
+	var top_rotation = [1,0,0];
+	var bottom_rotation = [1,0,0];
+/*
+	this.pushMatrix();
+	front = new MyRect(this,args);
+	mat4.translate(matrixf, matrixf, front_translation);
+	this.multMatrix(matrixf);
+	front.display();
+	this.popMatrix();
+
+	this.pushMatrix();
+	back = new MyRect(this, args);
+	mat4.translate(matrixb, matrixb, back_translation);
+	mat4.rotate(matrixb, matrixb, 180*d2r, back_rotation);
+	this.multMatrix(matrixb);
+	back.display();
+	this.popMatrix();
+
+	this.pushMatrix();
+	left = new MyRect(this, args);
+	mat4.rotate(matrixl, matrixl, -90*d2r, left_rotation);
+	this.multMatrix(matrixl);
+	left.display();
+	this.popMatrix();
+
+	this.pushMatrix();
+	right = new MyRect(this, args);
+	mat4.translate(matrixr, matrixr, right_translation);
+	mat4.rotate(matrixr, matrixr, 90*d2r, right_rotation);
+	this.multMatrix(matrixr);
+	right.display();
+	this.popMatrix();*/
+
+	this.pushMatrix();
+	mtop = new MyRect(this, args); 
+	mat4.translate(matrixt, matrixt, top_translation);
+	mat4.rotate(matrixt, matrixt, -90*d2r, top_rotation);
+	this.multMatrix(matrixt);
+	mtop.display();
+	this.popMatrix();
+
+	this.pushMatrix();
+	bottom = new MyRect(this, args); 
+	mat4.rotate(matrixbt, matrixbt, 90*d2r, bottom_rotation);
+	this.multMatrix(matrixbt);
+	bottom.display();
+	this.popMatrix();
+
+
+	//this.popMatrix();
+}
+
+XMLscene.prototype.createBoard = function () {
+	var board_size=11;
+	for(var i=0; i<board_size;i++){
+		for(var j=0; j<board_size;j++){
+			var matrix = mat4.create();
+			this.pushMatrix();
+			mat4.translate(matrix, matrix, [i,0,j]);
+			
+			this.multMatrix(matrix);
+			this.createCube(); 
+			this.popMatrix();
+		}
+	}
+}
+
+XMLscene.prototype.createPiece = function () {
+	var args = [0.1, 0.5, 0.5, 20,2];
+	var matrix = mat4.create();
+	this.pushMatrix();
+	cyl = new MyCylinder(this, args); 
+	mat4.translate(matrix, matrix, [1,2,1]);
+	mat4.rotate(matrix, matrix, 90*d2r,[1,0,0]);
+	this.multMatrix(matrix);
+	cyl.display();
+	this.popMatrix();
+
+}
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
    // this.shader.bind();
 
+	this.logPicking();
+	this.clearPickRegistration();
 	
 	// Clear image and depth buffer everytime we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -393,11 +513,12 @@ XMLscene.prototype.display = function () {
 	//this.update();
 	for (var i = 0; i < this.lights.length; i++)
 		this.lights[i].update();
-
-	this.nodeProcessor(this.graph.nodes[0]);
+	this.desc = 0;
+	//this.nodeProcessor(this.graph.nodes[0]);
 
 	this.axis.display();
-
+	this.createBoard();
+	this.createPiece();
     //this.shader.unbind();
 
 	// ---- END Background, camera and axis setup

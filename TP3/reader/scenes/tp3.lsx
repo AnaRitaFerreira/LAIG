@@ -127,7 +127,7 @@
 
 <!-- The leaves -->
 <LEAVES>
-    <LEAF id="rectangle1" type="rectangle" args="0 5 5 0" />
+    <LEAF id="rectangle1" type="rectangle" args="0 1 1 0" />
     <LEAF id="plano" type="plane" parts="20" />
     
 </LEAVES>
@@ -152,7 +152,7 @@
 
     </NODE>
 
-    <NODE id="tabuleiro">
+   <!-- <NODE id="tabuleiro">
         <MATERIAL id="null" />
         <TEXTURE id="rocks" />
 
@@ -163,6 +163,97 @@
         <DESCENDANTS>
             <DESCENDANT id="plano" />            
         </DESCENDANTS>
+    </NODE>-->
+
+    <NODE id="tabuleiro">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="cubo1" />            
+        </DESCENDANTS>
+    </NODE>
+    <NODE id="cubo1">
+        <MATERIAL id="null" />
+        <TEXTURE id="rocks" />
+
+        <TRANSLATION x="2" y="0" z="2" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="cubo" />            
+        </DESCENDANTS>
+    </NODE>
+    <NODE id="cubo">
+
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="front" />  
+            <DESCENDANT id="back" /> 
+            <DESCENDANT id="top" /> 
+            <DESCENDANT id="bottom" /> 
+            <DESCENDANT id="left" /> 
+            <DESCENDANT id="right" /> 
+        </DESCENDANTS>
+
+    </NODE>
+   
+    <NODE id="front">
+         <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="0.0" y="0.0" z="1.0" />
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="back">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="1.0" y="0.0" z="0.0" />
+        <ROTATION axis="y" angle="180" />
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="top">
+         <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="0.0" y="1.0" z="1.0" />
+        <ROTATION axis="x" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="bottom">
+         <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <ROTATION axis="x" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="left">
+         <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />  
+        </DESCENDANTS>
+
+    </NODE>
+    <NODE id="right">
+         <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="1.0" y="0.0" z="1.0" />
+        <ROTATION axis="y" angle="90" />
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />  
+        </DESCENDANTS>
+
     </NODE>
     <NODE id="paredes">
         <MATERIAL id="null" />
