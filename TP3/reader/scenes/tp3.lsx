@@ -1,0 +1,215 @@
+<SCENE>
+
+<!-- Initial values -->
+<INITIALS>
+    <frustum near="0.1" far="200"/>                 
+    <translation x="-1" y="1" z="0" />               
+    <rotation axis="x" angle="0" />                
+    <rotation axis="y" angle="0" />                
+    <rotation axis="z" angle="0" />                
+    <scale sx="0.25" sy="0.25" sz="0.25" />         
+    <reference length="5" />                        
+</INITIALS>
+
+
+<!-- Illumination and clear colour -->
+<ILLUMINATION>
+    <ambient r="0.2" g="0.2" b="0.2" a="1" />       
+    <background r="0.5" g="0.5" b="0.5" a="1" />          
+</ILLUMINATION>
+
+
+<!-- Lights -->
+<LIGHTS>	
+	<LIGHT id="light0">                                    
+        <enable value ="1" />                   	       
+        <position  x="0" y="10" z="0" w="1" />       	   
+        <ambient r="0" g="0" b="0" a="1.0" />        	 
+        <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />        
+        <specular r="1.0" g="1.0" b="1.0" a="1.0" />      
+    </LIGHT>
+	
+	<LIGHT id="light1">                                    
+        <enable value ="1" />                   	      
+        <position x="30" y="10" z="0" w="1" />       	   
+        <ambient r="0.5" g="0.5" b="0.5" a="1.0" />       
+        <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />        
+        <specular r="1.0" g="1.0" b="1.0" a="1.0" />       
+    </LIGHT>
+	
+	<LIGHT id="light2">                                   
+        <enable value ="1" />                   	       
+        <position x="0" y="10" z="20" w="1" />       		   
+        <ambient r="0.5" g="0.5" b="0.5" a="1.0" />      
+        <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />        
+        <specular r="1.0" g="1.0" b="1.0" a="1.0" />       
+    </LIGHT>
+
+    <LIGHT id="light3">                                   
+        <enable value ="1" />                   	       
+        <position x="30" y="10" z="20" w="1" />       			
+        <ambient r="0.2" g="0.2" b="0.2" a="1.0" />           	
+        <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />       
+        <specular r="0.3" g="0.3" b="0.3" a="1.0" />      
+    </LIGHT>
+    
+</LIGHTS>
+
+<!-- Textures -->
+<TEXTURES>
+	<!-- Tree trunk -->
+    <TEXTURE id="trunk">
+        <file path="textures/parede-exterior-predio1.jpg" />               
+        <amplif_factor s="2" t="2" />                           
+    </TEXTURE>
+
+    <!-- Rocks -->
+    <TEXTURE id="rocks">
+        <file path="scenes/textures/rocks.jpg" />                
+        <amplif_factor s="1" t="1" />                           
+    </TEXTURE>
+
+    <!-- Glass work -->
+    <TEXTURE id="vidral">
+        <file path="scenes/textures/vidral.jpg" />               
+        <amplif_factor s="15" t="10" />                           
+    </TEXTURE>
+    
+</TEXTURES>
+
+
+<MATERIALS>
+	
+	<!-- Tree trunk material -->
+	<MATERIAL id="trunkTreeMaterial">                                  
+        <shininess value="1" />
+        <specular r="0.0" g="0.0" b="0.0" a="1" />        
+        <diffuse r="0.6" g="0.298" b="0.0" a="1" />      
+        <ambient r="0.1" g="0.1" b="0.1" a="1" />         
+        <emission r="0.0" g="0.0" b="0.0" a="1" />       
+    </MATERIAL>
+
+    <!-- Lamp post material -->
+    <MATERIAL id="lightPostMaterial">                                  
+        <shininess value="100" />
+        <specular r="0.0" g="0.0" b="0.0" a="1" />        
+        <diffuse r="0.447" g="0.416" b="0.416" a="1" />       
+        <ambient r="0.0" g="0.0" b="0.0" a="1" />         
+        <emission r="0.0" g="0.0" b="0.0" a="1" />        
+    </MATERIAL>
+
+    <!-- Light bulb material -->
+    <MATERIAL id="lightMaterial">                                  
+        <shininess value="100" />
+        <specular r="0.5" g="0.5" b="0.5" a="1" />       
+        <diffuse r="0.5" g="0.5" b="0.5" a="1" />       
+        <ambient r="0.0" g="0.0" b="0.0" a="1" />        
+        <emission r="0.0" g="0.0" b="0.0" a="1" />        
+    </MATERIAL>
+
+    <!-- A default material -->
+    <MATERIAL id="defaultMaterial">                                  
+        <shininess value="1" />
+        <specular r="0.0" g="0.0" b="0.0" a="1" />        
+        <diffuse r="0.5" g="0.5" b="0.5" a="1" />       
+        <ambient r="0.0" g="0.0" b="0.0" a="1" />         
+        <emission r="0.0" g="0.0" b="0.0" a="1" />        
+    </MATERIAL>
+
+</MATERIALS>
+
+<ANIMATIONS>
+    <ANIMATION id="lin" span="10" type="linear" >
+        <controlpoint xx="0" yy="3" zz="0" />
+    </ANIMATION>
+    <ANIMATION id="circ" span="15" type="circular" center="5 5 5" radius="5" startang="0" rotang="180" />
+</ANIMATIONS>
+
+<!-- The leaves -->
+<LEAVES>
+    <LEAF id="rectangle1" type="rectangle" args="0 5 5 0" />
+    <LEAF id="plano" type="plane" parts="20" />
+    
+</LEAVES>
+
+
+<!-- The nodes -->
+<NODES>
+
+    <ROOT id="root" />     
+
+    <!-- The root node -->
+    <NODE id="root">       
+        <MATERIAL id="defaultMaterial" />         
+        <TEXTURE id="null" />  
+
+        <DESCENDANTS>
+
+            <DESCENDANT id="tabuleiro" />
+            <DESCENDANT id="paredes" />
+
+        </DESCENDANTS>
+
+    </NODE>
+
+    <NODE id="tabuleiro">
+        <MATERIAL id="null" />
+        <TEXTURE id="rocks" />
+
+
+        <SCALE sx="10" sy="1" sz="10"/>
+        <TRANSLATION x="2" y="0" z="2" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="plano" />            
+        </DESCENDANTS>
+    </NODE>
+    <NODE id="paredes">
+        <MATERIAL id="null" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="parede1" /> 
+            <DESCENDANT id="parede2" />           
+        </DESCENDANTS>
+    </NODE>
+    <NODE id="parede1">
+        <MATERIAL id="null" />
+
+        <SCALE sx="7" sy="5" sz="1"/>
+
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />             
+        </DESCENDANTS>
+    </NODE>
+    <NODE id="parede2">
+        <MATERIAL id="null" />
+
+        <TRANSLATION x="0" y="25" z="0" />
+        <ROTATION axis="z" angle="180" />
+        <ROTATION axis="y" angle="-90" />
+        <SCALE sx="7" sy="5" sz="1"/>
+
+        <DESCENDANTS>
+            <DESCENDANT id="rectangle1" />             
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="voador">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <ANIMATIONREF id="circ" />
+
+        <SCALE sx="3" sy="3" sz="2"/>
+        <TRANSLATION x="0" y="5" z="5" />
+        <ROTATION axis="x" angle="-90" />
+        <ROTATION axis="z" angle="90" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="flyer" />            
+        </DESCENDANTS>
+    </NODE>
+
+
+</NODES>
+
+</SCENE>
