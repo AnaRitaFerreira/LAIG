@@ -31,6 +31,9 @@ XMLscene.prototype.init = function (application) {
     this.a_texture = null;
    	this.desc = 0;
 
+   	this.doublePick = false;
+   	this.playerType = 2;	// black = 0 | white = 1
+
 	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(10);
 
@@ -80,10 +83,16 @@ XMLscene.prototype.logPicking = function ()
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
-				if (obj)
+				//this.lastObject
+				if (obj && !this.doublePick)
 				{
 					var customId = this.pickResults[i][1];				
 					console.log("Picked object: " + obj + ", with pick id " + customId);
+				}
+				else if (obj && this.doublePick)
+				{
+					//double pick
+					//make move (check wich player is - this.playerType)
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
