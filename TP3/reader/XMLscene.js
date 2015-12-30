@@ -34,10 +34,10 @@ XMLscene.prototype.init = function (application) {
    	this.doublePick = false;
    	this.lastObj = -1;
    	this.playerType = 2;	// black = 0 | white = 1
-
+   	this.board = [];
 	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(10);
-
+	this.rect = new MyRect(this,[0, 1, 1, 0]);
 	this.setPickEnabled(true);
 };
 
@@ -77,38 +77,6 @@ XMLscene.prototype.initLights = function(){
 
 	//this.interface.callLight();
 };
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//												     PICKING  														 //
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-XMLscene.prototype.logPicking = function (){
-	if (this.pickMode == false) {
-		if (this.pickResults != null && this.pickResults.length > 0) {
-			for (var i=0; i< this.pickResults.length; i++) {
-				console.log("CENAS");
-				var obj = this.pickResults[i][0];
-				if (obj)
-				{
-					console.log("CENASCENAS");
-					var customId = this.pickResults[i][1];	
-					if(customId == this.lastObject){ // DOUBLE PICK
-						this.lastObject = -1;
-						console.log("DOUBLE PICKING - Picked object: " + obj + ", with pick id " + customId );
-					}
-					else{ // SIMPLE PICK
-						console.log("Picked object: " + obj + ", with pick id " + customId);
-						this.lastObject = customId;
-					}			
-				}
-					//make move (check wich player is - this.playerType)
-				
-			}
-			this.pickResults.splice(0,this.pickResults.length);
-		}		
-	}
-}
 
 XMLscene.prototype.updateLights = function() {
 	for (i = 0; i < this.lights.length; i++)
@@ -171,8 +139,192 @@ XMLscene.prototype.onGraphLoaded = function () {
 
 	this.initLeaves();
 
+	this.initBoard();
+
+	this.drawBoard();
+	//this.createBoard();
+
+	//this.createPiece(1,1,"white_piece");
 	//this.nodeProcessor(this.graph.nodes[0]);
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//												     PICKING  														 //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+XMLscene.prototype.logPicking = function (){
+	if (this.pickMode == false) {
+		if (this.pickResults != null && this.pickResults.length > 0) {
+			for (var i=0; i< this.pickResults.length; i++) {
+				var obj = this.pickResults[i][0];
+				if (obj)
+				{
+					var customId = this.pickResults[i][1];	
+					if(customId == this.lastObject){ // DOUBLE PICK
+						this.lastObject = -1;
+						console.log("DOUBLE PICKING - Picked object: " + obj + ", with pick id " + customId );
+					}
+					else{ // SIMPLE PICK
+						console.log("Picked object: " + obj + ", with pick id " + customId);
+						this.lastObject = customId;
+					}			
+				}
+					//make move (check wich player is - this.playerType)
+				
+			}
+			this.pickResults.splice(0,this.pickResults.length);
+		}		
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//												 PROLOG CONNECTION													 //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+XMLscene.prototype.getPrologRequest = function(requestString, onSuccess, onError, port){
+
+	var requestPort = port || 8081
+	var request = new XMLHttpRequest();
+	request.open('GET', 'http://localhost:'+requestPort+'/'+requestString, true);
+
+	request.onload = onSuccess || function(data){console.log("Request successful. Reply: " + data.target.response);};
+	request.onerror = onError || function(){console.log("Error waiting for response");};
+
+	request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+	request.send();
+}
+
+XMLscene.prototype.initBoard = function(){
+	var request = "board";
+	
+	/*
+	var a1 = [0,0,0];
+	var a2 = [0,0,1];
+	if(a1.length != a2.length)
+		console.log("not equal");
+	for(var i = 0; i<a1.length; i++){
+		if(a1[i]!=a2[i])
+			console.log("not equal");
+	}
+	*/
+	var self = this;
+	this.getPrologRequest(request, function(data) {
+        var board = data.target.response;
+
+        self.board = JSON.parse(board);
+    	
+        console.log(self.board[0]);
+        console.log(self.board.length);
+        // console.log("[" + typeof array + "]");
+        /*
+        var test = new Board(self,self.graph, array);
+         test.display();
+        self.initNodes();
+        */
+    });
+}
+
+XMLscene.prototype.fillBoard = function(){
+	for (var i = 0; i < this.board.length; i++) {
+		for (var j = 0; j < this.board.length; j++) {
+			if(this.board[i][j]=='0'){
+				this.drawPiece(j,i,"black_piece");
+			}
+			else if(this.board[i][j]==1){
+				this.drawPiece(j,i,"white_piece");
+			}
+		}
+	}
+}
+
+XMLscene.prototype.drawCube = function (texture) {
+	var args = [0, 1, 1, 0]; 
+	var cube = [];
+	var matrixf = mat4.create();
+	var matrixb = mat4.create();
+	var matrixl = mat4.create();
+	var matrixr = mat4.create();
+	var matrixt = mat4.create();
+	var matrixbt = mat4.create();
+	var front_translation = [0, 0, 1];
+	var back_rotation = [0,1,0];
+	var back_translation = [1,0,0];
+	var left_rotation = [0,1,0];
+	var right_rotation = [0,1,0];
+	var right_translation = [1,0,1];
+	var top_translation = [0,1,1];
+	var top_rotation = [1,0,0];
+	var bottom_rotation = [1,0,0];
+	this.rect.type = "rectangle";
+	this.rect.texture = texture;
+
+	this.pushMatrix();
+	mat4.translate(matrixf, matrixf, front_translation);
+	this.multMatrix(matrixf);
+	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.popMatrix();
+
+	this.pushMatrix();
+	mat4.translate(matrixb, matrixb, back_translation);
+	mat4.rotate(matrixb, matrixb, 180*d2r, back_rotation);
+	this.multMatrix(matrixb);
+	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.popMatrix();
+
+	this.pushMatrix();
+	mat4.rotate(matrixl, matrixl, -90*d2r, left_rotation);
+	this.multMatrix(matrixl);
+	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.popMatrix();
+
+	this.pushMatrix();
+	mat4.translate(matrixr, matrixr, right_translation);
+	mat4.rotate(matrixr, matrixr, 90*d2r, right_rotation);
+	this.multMatrix(matrixr);
+	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.popMatrix();
+
+	this.pushMatrix();
+	mat4.translate(matrixt, matrixt, top_translation);
+	mat4.rotate(matrixt, matrixt, -90*d2r, top_rotation);
+	this.multMatrix(matrixt);
+	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.popMatrix();
+
+	this.pushMatrix();
+	mat4.rotate(matrixbt, matrixbt, 90*d2r, bottom_rotation);
+	this.multMatrix(matrixbt);
+	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.popMatrix();
+}
+
+XMLscene.prototype.drawBoard = function () {
+	var board_size=11;
+	var texture = this.textures["board"];
+	for(var i=0; i<board_size;i++){
+		for(var j=0; j<board_size;j++){
+			var matrix = mat4.create();
+			this.pushMatrix();
+			mat4.translate(matrix, matrix, [i,0,j]);
+			this.multMatrix(matrix);
+			this.drawCube(texture); 
+			this.popMatrix();
+		}
+	}
+}
+
+XMLscene.prototype.drawPiece = function (x,z,color) {
+	var matrix = mat4.create();
+	var texture = this.textures[color];
+	this.pushMatrix();
+	mat4.translate(matrix, matrix, [-0.25+x,1,-0.25+z]);
+	mat4.scale(matrix, matrix, [0.5,0.3,0.5]);
+	this.multMatrix(matrix);
+	this.drawCube(texture); 
+	this.popMatrix();
+}
 
 XMLscene.prototype.isLeaf = function(id){
 	for(var i = 0; i < this.graph.leaves.length; i++){
@@ -403,110 +555,6 @@ XMLscene.prototype.draw = function(leaf, s, t){
 		}
 }
 
-XMLscene.prototype.createCube = function () {
-	var args = [0, 1, 1, 0]; 
-	var matrixf = mat4.create();
-	var matrixb = mat4.create();
-	var matrixl = mat4.create();
-	var matrixr = mat4.create();
-	var matrixt = mat4.create();
-	var matrixbt = mat4.create();
-	var front_translation = [0, 0, 1];
-	var back_rotation = [0,1,0];
-	var back_translation = [1,0,0];
-	var left_rotation = [0,1,0];
-	var right_rotation = [0,1,0];
-	var right_translation = [1,0,1];
-	var top_translation = [0,1,1];
-	var top_rotation = [1,0,0];
-	var bottom_rotation = [1,0,0];
-
-/*
-	this.pushMatrix();
-	front = new MyRect(this,args);
-	mat4.translate(matrixf, matrixf, front_translation);
-	this.multMatrix(matrixf);
-	front.type = "rectangle";
-	//front.display();
-	this.draw(front,1,1);
-	this.popMatrix();
-
-	this.pushMatrix();
-	back = new MyRect(this, args);
-	mat4.translate(matrixb, matrixb, back_translation);
-	mat4.rotate(matrixb, matrixb, 180*d2r, back_rotation);
-	this.multMatrix(matrixb);
-	back.type = "rectangle";
-	//back.display();
-	this.draw(back,1,1);
-	this.popMatrix();
-
-	this.pushMatrix();
-	left = new MyRect(this, args);
-	mat4.rotate(matrixl, matrixl, -90*d2r, left_rotation);
-	this.multMatrix(matrixl);
-	left.type = "rectangle";
-	//left.display();
-	this.draw(left,1,1);
-	this.popMatrix();
-
-	this.pushMatrix();
-	right = new MyRect(this, args);
-	mat4.translate(matrixr, matrixr, right_translation);
-	mat4.rotate(matrixr, matrixr, 90*d2r, right_rotation);
-	this.multMatrix(matrixr);
-	right.type = "rectangle";
-	//right.display();
-	this.draw(right,1,1);
-	this.popMatrix();
-*/
-
-	this.pushMatrix();
-	mtop = new MyRect(this, args); 
-	mat4.translate(matrixt, matrixt, top_translation);
-	mat4.rotate(matrixt, matrixt, -90*d2r, top_rotation);
-	this.multMatrix(matrixt);
-	mtop.type = "rectangle";
-	//mtop.display();
-	this.draw(mtop,1,1);
-	this.popMatrix();
-
-	this.pushMatrix();
-	bottom = new MyRect(this, args); 
-	mat4.rotate(matrixbt, matrixbt, 90*d2r, bottom_rotation);
-	this.multMatrix(matrixbt);
-	bottom.type = "rectangle";
-	//bottom.display();
-	this.draw(bottom,1,1);
-	this.popMatrix();
-}
-
-XMLscene.prototype.createBoard = function () {
-	var board_size=11;
-	for(var i=0; i<board_size;i++){
-		for(var j=0; j<board_size;j++){
-			var matrix = mat4.create();
-			this.pushMatrix();
-			mat4.translate(matrix, matrix, [i,0,j]);
-			this.multMatrix(matrix);
-			this.createCube(); 
-			this.popMatrix();
-		}
-	}
-}
-
-XMLscene.prototype.createPiece = function () {
-	var args = [0.1, 0.5, 0.5, 20,2];
-	var matrix = mat4.create();
-	this.pushMatrix();
-	cyl = new MyCylinder(this, args); 
-	mat4.translate(matrix, matrix, [1,2,1]);
-	mat4.rotate(matrix, matrix, 90*d2r,[1,0,0]);
-	this.multMatrix(matrix);
-	cyl.display();
-	this.popMatrix();
-}
-
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
    // this.shader.bind();
@@ -533,8 +581,12 @@ XMLscene.prototype.display = function () {
 	this.desc = 0;
 	//this.nodeProcessor(this.graph.nodes[0]);
 
+	//console.log("Teste: " + this.textures["board"].amp.s);
+
+
 	this.axis.display();
-	this.createBoard();
+	this.drawBoard();
+	this.fillBoard();
 	//this.createPiece();
     //this.shader.unbind();
 

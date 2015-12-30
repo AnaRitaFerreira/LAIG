@@ -74,6 +74,24 @@
         <file path="scenes/textures/vidral.jpg" />               
         <amplif_factor s="15" t="10" />                           
     </TEXTURE>
+
+    <!-- Board piece -->
+    <TEXTURE id="board">
+        <file path="textures/neutral.png" />               
+        <amplif_factor s="1" t="1" />                           
+    </TEXTURE>
+
+    <!-- Black piece -->
+    <TEXTURE id="black_piece">
+        <file path="textures/black.png" />               
+        <amplif_factor s="1" t="1" />                           
+    </TEXTURE>
+
+    <!-- White Piece -->
+    <TEXTURE id="white_piece">
+        <file path="textures/white.png" />               
+        <amplif_factor s="1" t="1" />                           
+    </TEXTURE>
     
 </TEXTURES>
 
