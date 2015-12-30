@@ -32,6 +32,7 @@ XMLscene.prototype.init = function (application) {
    	this.desc = 0;
 
    	this.doublePick = false;
+   	this.lastObj = -1;
    	this.playerType = 2;	// black = 0 | white = 1
 
 	this.axis=new CGFaxis(this);
@@ -76,24 +77,33 @@ XMLscene.prototype.initLights = function(){
 
 	//this.interface.callLight();
 };
-//Picking
-XMLscene.prototype.logPicking = function ()
-{
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//												     PICKING  														 //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+XMLscene.prototype.logPicking = function (){
 	if (this.pickMode == false) {
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
+				console.log("CENAS");
 				var obj = this.pickResults[i][0];
-				//this.lastObject
-				if (obj && !this.doublePick)
+				if (obj)
 				{
-					var customId = this.pickResults[i][1];				
-					console.log("Picked object: " + obj + ", with pick id " + customId);
+					console.log("CENASCENAS");
+					var customId = this.pickResults[i][1];	
+					if(customId == this.lastObject){ // DOUBLE PICK
+						this.lastObject = -1;
+						console.log("DOUBLE PICKING - Picked object: " + obj + ", with pick id " + customId );
+					}
+					else{ // SIMPLE PICK
+						console.log("Picked object: " + obj + ", with pick id " + customId);
+						this.lastObject = customId;
+					}			
 				}
-				else if (obj && this.doublePick)
-				{
-					//double pick
 					//make move (check wich player is - this.playerType)
-				}
+				
 			}
 			this.pickResults.splice(0,this.pickResults.length);
 		}		
@@ -162,7 +172,6 @@ XMLscene.prototype.onGraphLoaded = function () {
 	this.initLeaves();
 
 	//this.nodeProcessor(this.graph.nodes[0]);
-
 };
 
 XMLscene.prototype.isLeaf = function(id){
@@ -218,7 +227,6 @@ XMLscene.prototype.getTexture = function(id) {
 		if (id == this.textures[i].id) 
 			return this.textures[i];
 };
-
 
 XMLscene.prototype.initLeaves = function(){
 	for( var i=0; i < this.graph.leaves.length; i++)
@@ -298,11 +306,6 @@ XMLscene.prototype.initAnim = function(){
 
 XMLscene.prototype.nodeProcessor = function(node) {
 	this.pushMatrix();
-/*
-	console.log("\n----------------DEBUG -> " + node.id + "--------------\n");
-	console.log("\nMATERIAL: " + node.material +"\n");
-	console.log("\n-----------------DEBUG--------------\n");
-*/
 	if(node.texture != "null"){
 		if(node.material != "null"){
 			this.a_material=node.material;
@@ -330,8 +333,6 @@ XMLscene.prototype.nodeProcessor = function(node) {
 	var anim=node.anim_ref[0];
 	//console.log(node.anim_ref[0]);
 
-	
-	
 	if(anim != undefined ){
 	var animMatrix;
 		for(var i=0; i < this.graph.animations.length; i++)
@@ -403,9 +404,6 @@ XMLscene.prototype.draw = function(leaf, s, t){
 }
 
 XMLscene.prototype.createCube = function () {
-	//this.pushMatrix();
-
-
 	var args = [0, 1, 1, 0]; 
 	var matrixf = mat4.create();
 	var matrixb = mat4.create();
@@ -422,12 +420,15 @@ XMLscene.prototype.createCube = function () {
 	var top_translation = [0,1,1];
 	var top_rotation = [1,0,0];
 	var bottom_rotation = [1,0,0];
+
 /*
 	this.pushMatrix();
 	front = new MyRect(this,args);
 	mat4.translate(matrixf, matrixf, front_translation);
 	this.multMatrix(matrixf);
-	front.display();
+	front.type = "rectangle";
+	//front.display();
+	this.draw(front,1,1);
 	this.popMatrix();
 
 	this.pushMatrix();
@@ -435,14 +436,18 @@ XMLscene.prototype.createCube = function () {
 	mat4.translate(matrixb, matrixb, back_translation);
 	mat4.rotate(matrixb, matrixb, 180*d2r, back_rotation);
 	this.multMatrix(matrixb);
-	back.display();
+	back.type = "rectangle";
+	//back.display();
+	this.draw(back,1,1);
 	this.popMatrix();
 
 	this.pushMatrix();
 	left = new MyRect(this, args);
 	mat4.rotate(matrixl, matrixl, -90*d2r, left_rotation);
 	this.multMatrix(matrixl);
-	left.display();
+	left.type = "rectangle";
+	//left.display();
+	this.draw(left,1,1);
 	this.popMatrix();
 
 	this.pushMatrix();
@@ -450,26 +455,30 @@ XMLscene.prototype.createCube = function () {
 	mat4.translate(matrixr, matrixr, right_translation);
 	mat4.rotate(matrixr, matrixr, 90*d2r, right_rotation);
 	this.multMatrix(matrixr);
-	right.display();
-	this.popMatrix();*/
+	right.type = "rectangle";
+	//right.display();
+	this.draw(right,1,1);
+	this.popMatrix();
+*/
 
 	this.pushMatrix();
 	mtop = new MyRect(this, args); 
 	mat4.translate(matrixt, matrixt, top_translation);
 	mat4.rotate(matrixt, matrixt, -90*d2r, top_rotation);
 	this.multMatrix(matrixt);
-	mtop.display();
+	mtop.type = "rectangle";
+	//mtop.display();
+	this.draw(mtop,1,1);
 	this.popMatrix();
 
 	this.pushMatrix();
 	bottom = new MyRect(this, args); 
 	mat4.rotate(matrixbt, matrixbt, 90*d2r, bottom_rotation);
 	this.multMatrix(matrixbt);
-	bottom.display();
+	bottom.type = "rectangle";
+	//bottom.display();
+	this.draw(bottom,1,1);
 	this.popMatrix();
-
-
-	//this.popMatrix();
 }
 
 XMLscene.prototype.createBoard = function () {
@@ -479,7 +488,6 @@ XMLscene.prototype.createBoard = function () {
 			var matrix = mat4.create();
 			this.pushMatrix();
 			mat4.translate(matrix, matrix, [i,0,j]);
-			
 			this.multMatrix(matrix);
 			this.createCube(); 
 			this.popMatrix();
@@ -497,8 +505,8 @@ XMLscene.prototype.createPiece = function () {
 	this.multMatrix(matrix);
 	cyl.display();
 	this.popMatrix();
-
 }
+
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
    // this.shader.bind();
@@ -527,7 +535,7 @@ XMLscene.prototype.display = function () {
 
 	this.axis.display();
 	this.createBoard();
-	this.createPiece();
+	//this.createPiece();
     //this.shader.unbind();
 
 	// ---- END Background, camera and axis setup
@@ -536,4 +544,3 @@ XMLscene.prototype.display = function () {
 	// only get executed after the graph has loaded correctly.
 	// This is one possible way to do it
 };
-
