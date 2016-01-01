@@ -33,16 +33,19 @@ XMLscene.prototype.init = function (application) {
 
    	this.doublePick = false;
    	this.lastObj = -1;
-   	this.playerType = 2;	// black = 0 | white = 1
+   	this.playerType = 0;	// black = 0 | white = 1
+   	this.boardArray = null;
    	this.board = [];
 	this.axis=new CGFaxis(this);
 	this.setUpdatePeriod(10);
 	this.rect = new MyRect(this,[0, 1, 1, 0]);
 	this.setPickEnabled(true);
+	this.x=15;
+	this.z=15;
 };
 
 XMLscene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 20, 30), vec3.fromValues(0, 0, 0));
 };
 XMLscene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.2, 0.4, 0.8, 1.0);
@@ -142,10 +145,9 @@ XMLscene.prototype.onGraphLoaded = function () {
 	this.initBoard();
 
 	this.drawBoard();
-	//this.createBoard();
 
 	//this.createPiece(1,1,"white_piece");
-	//this.nodeProcessor(this.graph.nodes[0]);
+	this.nodeProcessor(this.graph.nodes[0]);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,9 +163,18 @@ XMLscene.prototype.logPicking = function (){
 				if (obj)
 				{
 					var customId = this.pickResults[i][1];	
-					if(customId == this.lastObject){ // DOUBLE PICK
+					if(customId == this.lastObject && customId != 0 && customId != 121){ // DOUBLE PICK
 						this.lastObject = -1;
-						console.log("DOUBLE PICKING - Picked object: " + obj + ", with pick id " + customId );
+						console.log("DOUBLE PICKING - Picked object: " + obj + ", with pick id " + customId + " / " + this.playerType );
+						this.x=Math.ceil(customId/11);
+						if(customId%11 == 0)
+							this.z = 11;
+						else
+							this.z=customId%11;
+						console.log(this.board[(this.z-1)][(this.x-1)]);
+						if(this.board[(this.z-1)][(this.x-1)]=='2')
+							this.makeMove((this.x - 1),(this.z - 1));
+						
 					}
 					else{ // SIMPLE PICK
 						console.log("Picked object: " + obj + ", with pick id " + customId);
@@ -197,7 +208,8 @@ XMLscene.prototype.getPrologRequest = function(requestString, onSuccess, onError
 }
 
 XMLscene.prototype.initBoard = function(){
-	var request = "board";
+	var boardRequest = "board";
+	var initPlayers = "initPlayers";
 	
 	/*
 	var a1 = [0,0,0];
@@ -210,30 +222,45 @@ XMLscene.prototype.initBoard = function(){
 	}
 	*/
 	var self = this;
-	this.getPrologRequest(request, function(data) {
+	this.getPrologRequest(boardRequest, function(data) {
         var board = data.target.response;
-
+        self.boardArray = board;
         self.board = JSON.parse(board);
-    	
-        console.log(self.board[0]);
+    	for(var i= 0; i<self.board.length; i++)
+    		console.log(self.board[i]);
         console.log(self.board.length);
-        // console.log("[" + typeof array + "]");
-        /*
-        var test = new Board(self,self.graph, array);
-         test.display();
-        self.initNodes();
-        */
     });
+}
+
+XMLscene.prototype.makeMove = function(x,z){
+	var request = "move(" + this.boardArray + "," + x + "-" + z + "," + this.playerType + "-" + this.playerType + ")";
+
+	var self = this;
+	this.getPrologRequest(request, function(data) {
+		var board = data.target.response;
+		var newBoard = JSON.parse(board);
+		if(newBoard.length == self.board.length){
+			for(var i = 0; i<newBoard.length; i++){
+				for(var j = 0; j<newBoard.length; j++){
+					if(newBoard[i][j]!=self.board[i][j]){
+						self.board = JSON.parse(board);
+						self.boardArray = board;
+						if(self.playerType==0)
+							self.playerType=1;
+						else
+							self.playerType=0;
+					}
+				}
+			}
+		}
+	});
 }
 
 XMLscene.prototype.fillBoard = function(){
 	for (var i = 0; i < this.board.length; i++) {
 		for (var j = 0; j < this.board.length; j++) {
-			if(this.board[i][j]=='0'){
-				this.drawPiece(j,i,"black_piece");
-			}
-			else if(this.board[i][j]==1){
-				this.drawPiece(j,i,"white_piece");
+			if(this.board[i][j]!='2'){
+				this.drawPiece(j,i,this.board[i][j]);
 			}
 		}
 	}
@@ -257,59 +284,74 @@ XMLscene.prototype.drawCube = function (texture) {
 	var top_translation = [0,1,1];
 	var top_rotation = [1,0,0];
 	var bottom_rotation = [1,0,0];
+
+	var text = this.textures[texture];
 	this.rect.type = "rectangle";
-	this.rect.texture = texture;
+	this.rect.texture = text;
 
 	this.pushMatrix();
 	mat4.translate(matrixf, matrixf, front_translation);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
 	this.multMatrix(matrixf);
-	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.draw(this.rect,this.textures[texture].amp.s, this.textures[texture].amp.t);
 	this.popMatrix();
 
 	this.pushMatrix();
 	mat4.translate(matrixb, matrixb, back_translation);
 	mat4.rotate(matrixb, matrixb, 180*d2r, back_rotation);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
 	this.multMatrix(matrixb);
-	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.draw(this.rect,this.textures[texture].amp.s, this.textures[texture].amp.t);
 	this.popMatrix();
 
 	this.pushMatrix();
 	mat4.rotate(matrixl, matrixl, -90*d2r, left_rotation);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
 	this.multMatrix(matrixl);
-	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.draw(this.rect,this.textures[texture].amp.s, this.textures[texture].amp.t);
 	this.popMatrix();
 
 	this.pushMatrix();
 	mat4.translate(matrixr, matrixr, right_translation);
 	mat4.rotate(matrixr, matrixr, 90*d2r, right_rotation);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
 	this.multMatrix(matrixr);
-	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.draw(this.rect,this.textures[texture].amp.s, this.textures[texture].amp.t);
 	this.popMatrix();
 
 	this.pushMatrix();
 	mat4.translate(matrixt, matrixt, top_translation);
 	mat4.rotate(matrixt, matrixt, -90*d2r, top_rotation);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
 	this.multMatrix(matrixt);
-	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.draw(this.rect,this.textures[texture].amp.s, this.textures[texture].amp.t);
 	this.popMatrix();
 
 	this.pushMatrix();
 	mat4.rotate(matrixbt, matrixbt, 90*d2r, bottom_rotation);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
 	this.multMatrix(matrixbt);
-	this.draw(this.rect,texture.amp.s,texture.amp.t);
+	this.draw(this.rect,this.textures[texture].amp.s, this.textures[texture].amp.t);
 	this.popMatrix();
 }
 
 XMLscene.prototype.drawBoard = function () {
 	var board_size=11;
-	var texture = this.textures["board"];
+	
 	for(var i=0; i<board_size;i++){
 		for(var j=0; j<board_size;j++){
+			this.desc++;
 			var matrix = mat4.create();
 			this.pushMatrix();
 			mat4.translate(matrix, matrix, [i,0,j]);
 			this.multMatrix(matrix);
-			this.drawCube(texture); 
+			this.drawCube("board"); 
 			this.popMatrix();
 		}
 	}
@@ -317,12 +359,15 @@ XMLscene.prototype.drawBoard = function () {
 
 XMLscene.prototype.drawPiece = function (x,z,color) {
 	var matrix = mat4.create();
-	var texture = this.textures[color];
 	this.pushMatrix();
-	mat4.translate(matrix, matrix, [-0.25+x,1,-0.25+z]);
+	mat4.translate(matrix, matrix, [x-0.25,1,z-0.25]);
 	mat4.scale(matrix, matrix, [0.5,0.3,0.5]);
 	this.multMatrix(matrix);
-	this.drawCube(texture); 
+	if(color == '0')
+		this.drawCube("black_piece"); 
+	else
+		this.drawCube("white_piece"); 
+	
 	this.popMatrix();
 }
 
@@ -502,7 +547,9 @@ XMLscene.prototype.nodeProcessor = function(node) {
 	
 	for (var i = 0; i < node.descendants.length; i++) {
 		if(this.isLeaf(node.descendants[i])){
+
 			if(this.a_texture==undefined){
+				console.log("entra");
 				this.draw(this.leaves[node.descendants[i]],1,1);
 			}
 			else{
@@ -517,12 +564,12 @@ XMLscene.prototype.nodeProcessor = function(node) {
 };
 
 XMLscene.prototype.draw = function(leaf, s, t){
-	this.desc++;
+	
 	this.registerForPick(this.desc, leaf);
 	switch(leaf.type){
 			case "rectangle":{
-				leaf.updateTex(s,t);
-				leaf.display();
+				this.rect.updateTex(s,t);
+				this.rect.display();
 				break;
 			}
 			case "sphere":{
@@ -579,7 +626,7 @@ XMLscene.prototype.display = function () {
 	for (var i = 0; i < this.lights.length; i++)
 		this.lights[i].update();
 	this.desc = 0;
-	//this.nodeProcessor(this.graph.nodes[0]);
+	this.nodeProcessor(this.graph.nodes[0]);
 
 	//console.log("Teste: " + this.textures["board"].amp.s);
 

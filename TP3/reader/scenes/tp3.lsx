@@ -2,12 +2,12 @@
 
 <!-- Initial values -->
 <INITIALS>
-    <frustum near="0.1" far="200"/>                 
+    <frustum near="0.1" far="1000"/>                 
     <translation x="-1" y="1" z="0" />               
     <rotation axis="x" angle="0" />                
     <rotation axis="y" angle="0" />                
     <rotation axis="z" angle="0" />                
-    <scale sx="0.25" sy="0.25" sz="0.25" />         
+    <scale sx="0.10" sy="0.10" sz="0.10" />         
     <reference length="5" />                        
 </INITIALS>
 
@@ -146,7 +146,6 @@
 <!-- The leaves -->
 <LEAVES>
     <LEAF id="rectangle1" type="rectangle" args="0 1 1 0" />
-    <LEAF id="plano" type="plane" parts="20" />
     
 </LEAVES>
 
@@ -163,129 +162,25 @@
 
         <DESCENDANTS>
 
-            <DESCENDANT id="tabuleiro" />
             <DESCENDANT id="paredes" />
 
         </DESCENDANTS>
 
     </NODE>
 
-   <!-- <NODE id="tabuleiro">
-        <MATERIAL id="null" />
-        <TEXTURE id="rocks" />
-
-
-        <SCALE sx="10" sy="1" sz="10"/>
-        <TRANSLATION x="2" y="0" z="2" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="plano" />            
-        </DESCENDANTS>
-    </NODE>-->
-
-    <NODE id="tabuleiro">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cubo1" />            
-        </DESCENDANTS>
-    </NODE>
-    <NODE id="cubo1">
-        <MATERIAL id="null" />
-        <TEXTURE id="rocks" />
-
-        <TRANSLATION x="2" y="0" z="2" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="cubo" />            
-        </DESCENDANTS>
-    </NODE>
-    <NODE id="cubo">
-
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <DESCENDANTS>
-            <DESCENDANT id="front" />  
-            <DESCENDANT id="back" /> 
-            <DESCENDANT id="top" /> 
-            <DESCENDANT id="bottom" /> 
-            <DESCENDANT id="left" /> 
-            <DESCENDANT id="right" /> 
-        </DESCENDANTS>
-
-    </NODE>
-   
-    <NODE id="front">
-         <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <TRANSLATION x="0.0" y="0.0" z="1.0" />
-        <DESCENDANTS>
-            <DESCENDANT id="rectangle1" />  
-        </DESCENDANTS>
-
-    </NODE>
-    <NODE id="back">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <TRANSLATION x="1.0" y="0.0" z="0.0" />
-        <ROTATION axis="y" angle="180" />
-        <DESCENDANTS>
-            <DESCENDANT id="rectangle1" />  
-        </DESCENDANTS>
-
-    </NODE>
-    <NODE id="top">
-         <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <TRANSLATION x="0.0" y="1.0" z="1.0" />
-        <ROTATION axis="x" angle="-90" />
-        <DESCENDANTS>
-            <DESCENDANT id="rectangle1" />  
-        </DESCENDANTS>
-
-    </NODE>
-    <NODE id="bottom">
-         <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <ROTATION axis="x" angle="-90" />
-        <DESCENDANTS>
-            <DESCENDANT id="rectangle1" />  
-        </DESCENDANTS>
-
-    </NODE>
-    <NODE id="left">
-         <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <ROTATION axis="y" angle="-90" />
-        <DESCENDANTS>
-            <DESCENDANT id="rectangle1" />  
-        </DESCENDANTS>
-
-    </NODE>
-    <NODE id="right">
-         <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <TRANSLATION x="1.0" y="0.0" z="1.0" />
-        <ROTATION axis="y" angle="90" />
-        <DESCENDANTS>
-            <DESCENDANT id="rectangle1" />  
-        </DESCENDANTS>
-
-    </NODE>
     <NODE id="paredes">
         <MATERIAL id="null" />
-
+        <TEXTURE id="null" /> 
         <DESCENDANTS>
             <DESCENDANT id="parede1" /> 
             <DESCENDANT id="parede2" />           
         </DESCENDANTS>
     </NODE>
+
     <NODE id="parede1">
         <MATERIAL id="null" />
-
+        <TEXTURE id="black_piece" /> 
         <SCALE sx="7" sy="5" sz="1"/>
-
         <DESCENDANTS>
             <DESCENDANT id="rectangle1" />             
         </DESCENDANTS>
@@ -293,28 +188,14 @@
     <NODE id="parede2">
         <MATERIAL id="null" />
 
-        <TRANSLATION x="0" y="25" z="0" />
+        <TEXTURE id="white_piece" /> 
+        <TRANSLATION x="0" y="5" z="0" />
         <ROTATION axis="z" angle="180" />
         <ROTATION axis="y" angle="-90" />
         <SCALE sx="7" sy="5" sz="1"/>
 
         <DESCENDANTS>
             <DESCENDANT id="rectangle1" />             
-        </DESCENDANTS>
-    </NODE>
-
-    <NODE id="voador">
-        <MATERIAL id="null" />
-        <TEXTURE id="null" />
-        <ANIMATIONREF id="circ" />
-
-        <SCALE sx="3" sy="3" sz="2"/>
-        <TRANSLATION x="0" y="5" z="5" />
-        <ROTATION axis="x" angle="-90" />
-        <ROTATION axis="z" angle="90" />
-
-        <DESCENDANTS>
-            <DESCENDANT id="flyer" />            
         </DESCENDANTS>
     </NODE>
 

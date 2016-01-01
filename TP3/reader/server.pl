@@ -111,10 +111,7 @@ parse_input(test(C,N), Res) :- test(C,Res,N).
 parse_input(init, complete) :- init.
 parse_input(quit, goodbye).
 parse_input(board, B) :- board(B,12).
-parse_input(move(X-Y), NB) :- 
-	board(B,12),
-	gameMode(B, Pl1-P1, Pl2-P2),
-	makeMove(B, X-Y, Pl1-P1, NB).
+parse_input(move(B, X-Y, Pl1-P1), NB) :- makeMove(B, X-Y, Pl1-P1, NB).
 
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).
