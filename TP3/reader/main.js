@@ -16,14 +16,14 @@ serialInclude(['../lib/CGF.js',
                 'illumination.js', 'initials.js', 'leaf.js', 
                 'light.js', 'material.js', 'texture.js', 'glMatrix.js',
                 'primitives/MyRect.js', 'primitives/MyCylinder.js', 'primitives/MySphere.js','primitives/MyPlane.js', 'primitives/MyPatch.js', 'primitives/MyTerrain.js',
-                'primitives/MyTriangle.js', 'Animation.js', 'CircularAnimation.js', 'LinearAnimation.js', 
+                'primitives/MyTriangle.js', 'Animation.js', 'CircularAnimation.js', 'LinearAnimation.js', 'Interface.js',
 
 main=function()
 {
 	// Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var myScene = new XMLscene();
-    var myInterface = new CGFinterface();
+    var myInterface = new Interface();
 
     app.init();
 

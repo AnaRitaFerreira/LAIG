@@ -59,13 +59,13 @@
 <TEXTURES>
 	<!-- Wall -->
     <TEXTURE id="wall">
-        <file path="textures/wall.jpg" />               
+        <file path="textures/horizon.jpg" />               
         <amplif_factor s="1" t="1" />                           
     </TEXTURE>
 
     <!-- Floor -->
     <TEXTURE id="floor">
-        <file path="textures/floor.jpg" />                
+        <file path="textures/grass.jpg" />                
         <amplif_factor s="1" t="1" />                           
     </TEXTURE>
 
@@ -189,7 +189,7 @@
     <NODE id="parede2">
         <MATERIAL id="null" />
 
-         <TEXTURE id="null" /> 
+        <TEXTURE id="null" /> 
         <TRANSLATION x="0" y="0" z="15" />
         <ROTATION axis="y" angle="-270" />
         <SCALE sx="15" sy="10" sz="1"/>

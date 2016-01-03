@@ -1,57 +1,60 @@
 var d2r=Math.PI/180;
 
 function XMLscene() {
-    CGFscene.call(this);
+	CGFscene.call(this);
 }
 
 XMLscene.prototype = Object.create(CGFscene.prototype);
 XMLscene.prototype.constructor = XMLscene;
 
 XMLscene.prototype.init = function (application) {
-    CGFscene.prototype.init.call(this, application);
+	CGFscene.prototype.init.call(this, application);
 
-    this.initCameras();
+	this.initCameras();
 
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-    this.gl.clearDepth(100.0);
-    this.gl.enable(this.gl.DEPTH_TEST);
+	this.gl.clearDepth(100.0);
+	this.gl.enable(this.gl.DEPTH_TEST);
 	this.gl.enable(this.gl.CULL_FACE);
-    this.gl.depthFunc(this.gl.LEQUAL);
-    this.enableTextures(true);
+	this.gl.depthFunc(this.gl.LEQUAL);
+	this.enableTextures(true);
 
 	this.lightsEnabled = [];
 	this.grafo=[];
 
 	this.textures = {};
-    this.materials = {};
-    this.leaves = {};
-    this.nodes = [];
-    this.a_material = null;
-    this.a_texture = null;
-   	this.desc = 0;
+	this.materials = {};
+	this.leaves = {};
+	this.nodes = [];
+	this.a_material = null;
+	this.a_texture = null;
+	this.desc = 0;
 
-   	this.doublePick = false;
-   	this.lastObj = -1;
+	this.doublePick = false;
+	this.lastObj = -1;
    	this.playerType = 0;	// black = 0 | white = 1
    	this.boardArray = null;
    	this.board = [];
-	this.axis=new CGFaxis(this);
-	this.setUpdatePeriod(10);
-	this.rect = new MyRect(this,[0, 1, 1, 0]);
+   	this.axis=new CGFaxis(this);
+   	this.setUpdatePeriod(10);
+   	this.rect = new MyRect(this,[0, 1, 1, 0]);
+   	this.sphere = new MySphere(this,[0.5, 20, 20]);
+   	this.cyl = new MyCylinder(this,[0.7, 0.5, 0.5, 20, 20]);
+	this.typeOfPiece = 1; //0 - cube; 1 - sphere; 2 - cylinder
 	this.setPickEnabled(true);
 	this.x=15;
 	this.z=15;
 };
 
 XMLscene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 20, 30), vec3.fromValues(0, 0, 0));
+	this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 20, 30), vec3.fromValues(0, 0, 0));
 };
 XMLscene.prototype.setDefaultAppearance = function () {
-    this.setAmbient(0.2, 0.4, 0.8, 1.0);
-    this.setDiffuse(0.2, 0.4, 0.8, 1.0);
-    this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);	
+	this.setAmbient(0.2, 0.4, 0.8, 1.0);
+	this.setDiffuse(0.2, 0.4, 0.8, 1.0);
+	this.setSpecular(0.2, 0.4, 0.8, 1.0);
+	this.setShininess(10.0);	
 };
 
 XMLscene.prototype.initLights = function(){
@@ -79,6 +82,7 @@ XMLscene.prototype.initLights = function(){
 	//this.shader.unbind();
 
 	//this.interface.callLight();
+	this.lightsLoad = true;
 };
 
 XMLscene.prototype.updateLights = function() {
@@ -145,8 +149,7 @@ XMLscene.prototype.onGraphLoaded = function () {
 	this.initBoard();
 
 	this.drawBoard();
-
-	//this.createPiece(1,1,"white_piece");
+	
 	this.nodeProcessor(this.graph.nodes[0]);
 };
 
@@ -163,17 +166,18 @@ XMLscene.prototype.logPicking = function (){
 				if (obj)
 				{
 					var customId = this.pickResults[i][1];	
-					if(customId == this.lastObject && customId != 0 && customId != 121){ // DOUBLE PICK
+					if(customId == this.lastObject && customId > 0 && customId < 144){ // DOUBLE PICK
 						this.lastObject = -1;
 						console.log("DOUBLE PICKING - Picked object: " + obj + ", with pick id " + customId + " / " + this.playerType );
-						this.x=Math.ceil(customId/11);
-						if(customId%11 == 0)
-							this.z = 11;
+						this.x=Math.ceil(customId/12);
+						if(customId%12 == 0)
+							this.z = 12;
 						else
-							this.z=customId%11;
+							this.z=customId%12;
 						console.log(this.board[(this.z-1)][(this.x-1)]);
-						if(this.board[(this.z-1)][(this.x-1)]=='2')
+						if(this.board[(this.z-1)][(this.x-1)]=='2'){
 							this.makeMove((this.x - 1),(this.z - 1));
+						}
 						
 					}
 					else{ // SIMPLE PICK
@@ -182,12 +186,12 @@ XMLscene.prototype.logPicking = function (){
 					}			
 				}
 					//make move (check wich player is - this.playerType)
-				
-			}
-			this.pickResults.splice(0,this.pickResults.length);
-		}		
+
+				}
+				this.pickResults.splice(0,this.pickResults.length);
+			}		
+		}
 	}
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,13 +227,13 @@ XMLscene.prototype.initBoard = function(){
 	*/
 	var self = this;
 	this.getPrologRequest(boardRequest, function(data) {
-        var board = data.target.response;
-        self.boardArray = board;
-        self.board = JSON.parse(board);
-    	for(var i= 0; i<self.board.length; i++)
-    		console.log(self.board[i]);
-        console.log(self.board.length);
-    });
+		var board = data.target.response;
+		self.boardArray = board;
+		self.board = JSON.parse(board);
+		for(var i= 0; i<self.board.length; i++)
+			console.log(self.board[i]);
+		console.log(self.board.length);
+	});
 }
 
 XMLscene.prototype.makeMove = function(x,z){
@@ -267,8 +271,6 @@ XMLscene.prototype.fillBoard = function(){
 }
 
 XMLscene.prototype.drawCube = function (texture) {
-	var args = [0, 1, 1, 0]; 
-	var cube = [];
 	var matrixf = mat4.create();
 	var matrixb = mat4.create();
 	var matrixl = mat4.create();
@@ -341,17 +343,77 @@ XMLscene.prototype.drawCube = function (texture) {
 	this.popMatrix();
 }
 
+XMLscene.prototype.drawSphere = function (texture) {
+	var matrix = mat4.create();
+	var text = this.textures[texture];
+	this.sphere.type = "sphere";
+	this.sphere.texture = text;
+
+	this.pushMatrix();
+	mat4.translate(matrix, matrix, [0.5,0,0.5]);
+	mat4.rotate(matrix, matrix, 90*d2r, [1,0,0]);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
+	this.multMatrix(matrix);
+	this.draw(this.sphere,this.textures[texture].amp.s, this.textures[texture].amp.t);
+	this.popMatrix();
+}
+
+XMLscene.prototype.drawCyl = function (texture){
+	var matrix = mat4.create();
+	var text = this.textures[texture];
+	this.cyl.type = "cylinder";
+	this.cyl.texture = text;
+
+	this.pushMatrix();
+	mat4.translate(matrix, matrix, [0.5,0.25,0.5]);
+	mat4.scale(matrix, matrix, [1,2,1]);
+	//mat4.rotate(matrix, matrix, 90*d2r, [1,0,0]);
+	this.materials["defaultMaterial"].setTexture(this.textures[texture]);
+	this.materials["defaultMaterial"].apply();
+	this.multMatrix(matrix);
+	this.draw(this.cyl,this.textures[texture].amp.s, this.textures[texture].amp.t);
+	this.popMatrix();
+}
+
 XMLscene.prototype.drawBoard = function () {
 	var board_size=11;
-	
-	for(var i=0; i<board_size;i++){
-		for(var j=0; j<board_size;j++){
+	for(var i=0; i<board_size+1;i++){
+		var matrix = mat4.create();
+		this.pushMatrix();
+		mat4.translate(matrix, matrix, [1,0,i+2]);
+		this.multMatrix(matrix);
+		if(i == 11)
+			this.drawCube("board");
+		else
+			this.drawCube("white_piece"); 
+		this.popMatrix();
+	}
+	for(var i=0; i<board_size+2;i++){
+		var matrix = mat4.create();
+		this.pushMatrix();
+		mat4.translate(matrix, matrix, [i+1,0,1]);
+		this.multMatrix(matrix);
+		if(i==0 || i == 12)
+			this.drawCube("board");
+		else
+			this.drawCube("black_piece"); 
+		this.popMatrix();
+	}
+	for(var i=0; i<board_size+1;i++){
+		for(var j=0; j<board_size+1;j++){
 			this.desc++;
 			var matrix = mat4.create();
 			this.pushMatrix();
-			mat4.translate(matrix, matrix, [i,0,j]);
+			mat4.translate(matrix, matrix, [i+2,0,j+2]);
 			this.multMatrix(matrix);
-			this.drawCube("board"); 
+			if(i == 11 && j != 11)
+				this.drawCube("white_piece"); 
+			else if(j == 11 && i != 11)
+				this.drawCube("black_piece"); 
+			else
+				this.drawCube("board"); 
+
 			this.popMatrix();
 		}
 	}
@@ -360,13 +422,27 @@ XMLscene.prototype.drawBoard = function () {
 XMLscene.prototype.drawPiece = function (x,z,color) {
 	var matrix = mat4.create();
 	this.pushMatrix();
-	mat4.translate(matrix, matrix, [x-0.25,1,z-0.25]);
+	mat4.translate(matrix, matrix, [(x-0.25)+2,1,(z-0.25)+2]);
 	mat4.scale(matrix, matrix, [0.5,0.3,0.5]);
 	this.multMatrix(matrix);
-	if(color == '0')
-		this.drawCube("black_piece"); 
-	else
-		this.drawCube("white_piece"); 
+	if(this.typeOfPiece == 0){
+		if(color == '0')
+			this.drawCube("black_piece"); 
+		else
+			this.drawCube("white_piece"); 
+	}
+	else if(this.typeOfPiece == 1){
+		if(color == '0')
+			this.drawSphere("black_piece"); 
+		else
+			this.drawSphere("white_piece");
+	}
+	else if(this.typeOfPiece == 2){
+		if(color == '0')
+			this.drawCyl("black_piece"); 
+		else
+			this.drawCyl("white_piece");
+	}
 	
 	this.popMatrix();
 }
@@ -387,7 +463,7 @@ XMLscene.prototype.processMaterials = function(){
 		console.log("material: "+ mat[i].id);
 		console.log("\n----DEBUG----\n");
 
-	    this.materials[mat[i].id] = new CGFappearance(this);
+		this.materials[mat[i].id] = new CGFappearance(this);
 		this.materials[mat[i].id].setAmbient(mat[i].ambient.r, mat[i].ambient.g, mat[i].ambient.b, mat[i].ambient.a);
 		this.materials[mat[i].id].setDiffuse(mat[i].diffuse.r, mat[i].diffuse.g, mat[i].diffuse.b, mat[i].diffuse.a);
 		this.materials[mat[i].id].setSpecular(mat[i].specular.r, mat[i].specular.g, mat[i].specular.b, mat[i].specular.a);
@@ -411,18 +487,20 @@ XMLscene.prototype.getMaterial = function(id) {
 	if (id == null) 
 		return null;
 
-	for (var i = 0; i < this.materials.length; i++)
+	for (var i = 0; i < this.materials.length; i++){
 		if (id == this.materials[i].id) 
 			return this.materials[i];
+	}
 };
 
 XMLscene.prototype.getTexture = function(id) {
 	if (id == null) 
 		return null;
 
-	for (var i = 0; i < this.textures.length; i++)
+	for (var i = 0; i < this.textures.length; i++){
 		if (id == this.textures[i].id) 
 			return this.textures[i];
+	}
 };
 
 XMLscene.prototype.initLeaves = function(){
@@ -480,17 +558,17 @@ XMLscene.prototype.update = function(current_time){
 				if(this.lightsEnabled[light]){
 	               // console.log(this.lightsEnabled[light]);
 	               this.lights[i].enable();
-           		}
-           	else
-           		this.lights[i].disable();
-           continue;
-       		}
-   		}
+	           }
+	           else
+	           	this.lights[i].disable();
+	           continue;
+	       }
+	   }
 	}
 	for(anim in this.graph.animations){
 
 		//if(this.graph.animations[anim].current)
-			this.graph.animations[anim].update(current_time);
+		this.graph.animations[anim].update(current_time);
 	}
 };
 
@@ -567,55 +645,55 @@ XMLscene.prototype.draw = function(leaf, s, t){
 	
 	this.registerForPick(this.desc, leaf);
 	switch(leaf.type){
-			case "rectangle":{
-				this.rect.updateTex(s,t);
-				this.rect.display();
-				break;
-			}
-			case "sphere":{
-				this.scale(leaf.radius*2,leaf.radius*2,leaf.radius*2);
-				leaf.display();
-				break;
-			}
-			case "triangle":{
-				leaf.updateTex(s,t);
-				leaf.display();
-				break;
-			}
-			case "cylinder":{
-				this.scale(1,1,leaf.height);
-				leaf.display();
-				break;
-			}
-			case "plane":{
-				leaf.display();
-				break;
-			}
-			case "patch":{
-				leaf.display();
-				break;
-			}
-			case "terrain":{
-				leaf.display();
-				break;
-			}
+		case "rectangle":{
+			this.rect.updateTex(s,t);
+			this.rect.display();
+			break;
 		}
+		case "sphere":{
+			this.scale(leaf.radius*2,leaf.radius*2,leaf.radius*2);
+			leaf.display();
+			break;
+		}
+		case "triangle":{
+			leaf.updateTex(s,t);
+			leaf.display();
+			break;
+		}
+		case "cylinder":{
+			this.scale(1,1,leaf.height);
+			leaf.display();
+			break;
+		}
+		case "plane":{
+			leaf.display();
+			break;
+		}
+		case "patch":{
+			leaf.display();
+			break;
+		}
+		case "terrain":{
+			leaf.display();
+			break;
+		}
+	}
 }
 
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
    // this.shader.bind();
 
-	this.logPicking();
-	this.clearPickRegistration();
-	
+   this.logPicking();
+   this.clearPickRegistration();
+
 	// Clear image and depth buffer everytime we update the scene
-    this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+	this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 	// Initialize Model-View matrix as identity (no transformation
-	this.updateProjectionMatrix();
-    this.loadIdentity();
+		this.updateProjectionMatrix();
+		this.loadIdentity();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
@@ -626,15 +704,18 @@ XMLscene.prototype.display = function () {
 	for (var i = 0; i < this.lights.length; i++)
 		this.lights[i].update();
 	this.desc = 0;
-	this.nodeProcessor(this.graph.nodes[0]);
 
 	//console.log("Teste: " + this.textures["board"].amp.s);
-
+	
 
 	this.axis.display();
+	this.nodeProcessor(this.graph.nodes[0]);
+	
 	this.drawBoard();
 	this.fillBoard();
-	//this.createPiece();
+
+	
+
     //this.shader.unbind();
 
 	// ---- END Background, camera and axis setup

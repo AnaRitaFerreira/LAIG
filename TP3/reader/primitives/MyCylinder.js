@@ -10,10 +10,10 @@
 /*
         top = typeof top !== 'undefined' ? top : false;
         bottom = typeof bottom !== 'undefined' ? bottom : false;
-        texture = typeof texture !== 'undefined' ? texture : false;*/
+        texture = typeof texture !== 'undefined' ? texture : false;
         this.top = top;
         this.bottom = bottom;
-        this.texture = texture;
+        this.texture = texture;*/
         this.topRad = this.args[2];
         this.bottomRad = this.args[1];
         this.height = this.args[0];
